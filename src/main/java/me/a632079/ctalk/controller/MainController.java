@@ -7,6 +7,5 @@ package me.a632079.ctalk.controller;
  * @author: haoduor
  */
 
-
 public class MainController {
 }

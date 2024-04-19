@@ -35,34 +35,4 @@ public class TestController {
     public String pp() {
         return "foo";
     }
-
-    @GetMapping("/user")
-    public void user100() {
-        List<User> userList = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
-            User user = User.builder()
-                             .id(snowflake.nextId())
-                             .password(RandomUtil.randomString(64))
-                             .avatar(RandomUtil.randomString(20))
-                             .email(RandomUtil.randomString(10) + "@gmail.com")
-                             .verify(false)
-                             .nickName(RandomUtil.randomString(5))
-                             .build();
-            userList.add(user);
-        }
-
-        Flux<User> userFlux = userService.saveAll(userList);
-        userFlux.subscribe().dispose();
-    }
-
-    @GetMapping("/find")
-    public User find() {
-        User user = User.builder()
-                         .id(1781144015178174492L)
-                         .build();
-
-        Flux<User> all = userService.findAll(Example.of(user));
-
-        return all.blockFirst();
-    }
 }

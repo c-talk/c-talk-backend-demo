@@ -12,8 +12,8 @@
 	<groupId>me.a632079</groupId>
 	<artifactId>c-talk</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>c-talk</name>
+	<description>c-talk IM</description>
 
 	<properties>
 		<java.version>11</java.version>
