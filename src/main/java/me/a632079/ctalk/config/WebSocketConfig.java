@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @className: WebSocketConfig
- * @description: WebSocketConfig - TODO
+ * @description: WebSocketConfig - websocket服务器
  * @version: v1.0.0
  * @author: haoduor
  */

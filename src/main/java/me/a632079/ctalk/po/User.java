@@ -1,12 +1,8 @@
 package me.a632079.ctalk.po;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 /**
  * @className: User
@@ -19,11 +15,9 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Document("user")
-public class User {
-
-    @MongoId
-    private Long id;
+public class User extends BasePo{
 
     private String nickName;
 

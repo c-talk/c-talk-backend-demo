@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @className: IdConfig
- * @description: IdConfig - TODO
+ * @description: IdConfig - snowflake
  * @version: v1.0.0
  * @author: haoduor
  */
