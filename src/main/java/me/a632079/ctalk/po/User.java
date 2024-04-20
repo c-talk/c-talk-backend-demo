@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @className: User
- * @description: User - TODO
+ * @description: User - 用户
  * @version: v1.0.0
  * @author: haoduor
  */

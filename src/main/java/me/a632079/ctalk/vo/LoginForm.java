@@ -1,5 +1,7 @@
 package me.a632079.ctalk.vo;
 
+import lombok.Data;
+
 /**
  * @className: LoginForm
  * @description: LoginForm - 登录表单
@@ -7,6 +9,8 @@ package me.a632079.ctalk.vo;
  * @author: haoduor
  */
 
-
+@Data
 public class LoginForm {
+    private String email;
+    private String password;
 }

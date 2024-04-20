@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * @className: BasePo
- * @description: BasePo - TODO
+ * @description: BasePo - 基础实体类
  * @version: v1.0.0
  * @author: haoduor
  */

@@ -1,0 +1,40 @@
+package me.a632079.ctalk.vo;
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+/**
+ * @className: ResultData
+ * @description: ResultData - 通用返回结果
+ * @version: v1.0.0
+ * @author: haoduor
+ */
+
+@Data
+public class ResultData<T> {
+    private int status;
+    private String message;
+    private T data;
+
+    private final LocalDateTime timeStamp;
+
+    public ResultData (){
+        this.timeStamp = LocalDateTime.now();
+    }
+
+    public static <T> ResultData<T> success(T data) {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setStatus(200);
+        resultData.setMessage("成功");
+        resultData.setData(data);
+        return resultData;
+    }
+
+    public static <T> ResultData<T> fail(int code, String message) {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setStatus(code);
+        resultData.setMessage(message);
+        return resultData;
+    }
+}
