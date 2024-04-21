@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.a632079.ctalk.enums.ResourceType;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
@@ -15,9 +16,11 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("resources")
-public class Resource {
+public class ResourcePo {
+    @MongoId
     private String id; // Cidr
     private String name; // maybe nullable?
+    private String mime;
     private ResourceType type;
     private Date created_at;
     private Date updated_at;
