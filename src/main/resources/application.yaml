@@ -32,3 +32,10 @@ ws:
   server:
     port: 1003
     host: 0.0.0.0
+
+#minio 配置
+minio:
+  endpoint: http://http://192.168.63.187:9000
+  bucke-name: pic
+  access-key: minioadmin
+  secret-key: minioadmin
