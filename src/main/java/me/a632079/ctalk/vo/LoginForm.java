@@ -2,6 +2,8 @@ package me.a632079.ctalk.vo;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @className: LoginForm
  * @description: LoginForm - 登录表单
@@ -11,7 +13,10 @@ import lombok.Data;
 
 @Data
 public class LoginForm {
+    @NotBlank(message = "邮箱不能为空")
     private String email;
+
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     // TODO 登录验证码

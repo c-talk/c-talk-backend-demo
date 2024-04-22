@@ -1,6 +1,7 @@
 package me.a632079.ctalk.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @className: CTalkException
@@ -10,11 +11,13 @@ import lombok.Data;
  */
 
 @Data
-public class CTalkException extends RuntimeException{
+@EqualsAndHashCode(callSuper = true)
+public class CTalkException extends RuntimeException {
 
     private IErrorCode errorCode;
 
     public CTalkException(IErrorCode errorCode) {
+        super();
         this.errorCode = errorCode;
     }
 }
