@@ -1,5 +1,6 @@
 package me.a632079.ctalk.config;
 
+import lombok.Data;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author: haoduor
  */
 
+@Data
 @Configuration
 @ConfigurationProperties("spring.rabbitmq")
 public class RabbitConfig {

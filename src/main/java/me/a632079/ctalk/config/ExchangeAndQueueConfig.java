@@ -30,9 +30,8 @@ public class ExchangeAndQueueConfig {
      * @param queueName  队列
      */
     public void createDirectBindQueue(String exchange, String routingKey, String queueName) {
-        //声明
-        DirectExchange directExchange = new DirectExchange(exchange, true, false);
-        Queue queue = new Queue(queueName, true, false, false);
+        DirectExchange directExchange = new DirectExchange(exchange, false, false);
+        Queue queue = new Queue(queueName, false, false, false);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
