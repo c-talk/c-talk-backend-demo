@@ -2,6 +2,7 @@ package me.a632079.ctalk.po;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -17,13 +18,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Document("user")
-public class User extends BasePo{
+public class User extends BasePo {
 
     private String nickName;
 
     @JsonIgnore
     private String password;
 
+    @Indexed(unique = true)
     private String email;
 
     private String avatar;

@@ -13,4 +13,7 @@ import lombok.Data;
 public class LoginForm {
     private String email;
     private String password;
+
+    // TODO 登录验证码
+    private String code;
 }

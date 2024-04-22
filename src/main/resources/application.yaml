@@ -10,6 +10,8 @@ spring:
       port: 27017
       username: root
       password: admin123456!!!
+      # 根据注解自动创建索引
+      auto-index-creation: true
   rabbitmq:
     host: 192.168.63.187
     port: 5672

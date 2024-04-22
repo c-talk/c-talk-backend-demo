@@ -13,7 +13,12 @@ import me.a632079.ctalk.exception.IErrorCode;
 @AllArgsConstructor
 public enum CTalkErrorCode implements IErrorCode {
 
-    TEST_ERROR("99", "测试错误");
+    PASSWORD_NOT_PASS("101", "两次密码输入不一致"),
+    EMAIl("102", "邮件已被占用"),
+
+    EMAIL_OR_PASSWORD_WRONG("201", "邮箱或密码错误"),
+
+    TEST_ERROR("999", "测试错误");
 
     private final String code;
 

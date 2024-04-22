@@ -24,7 +24,8 @@ import java.util.Objects;
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        // 跳过统一封装
+        return !returnType.hasMethodAnnotation(SkipPackage.class);
     }
 
     @Override

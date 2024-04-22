@@ -1,8 +1,7 @@
 package me.a632079.ctalk.service;
 
 import me.a632079.ctalk.po.User;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.stereotype.Service;
+import me.a632079.ctalk.vo.RegisterForm;
 
 /**
  * @className: UserService
@@ -10,6 +9,12 @@ import org.springframework.stereotype.Service;
  * @version: v1.0.0
  * @author: haoduor
  */
-@Service
-public interface UserService extends ReactiveMongoRepository<User, Long> {
+
+
+public interface UserService {
+    User addUser(RegisterForm form);
+
+    User getUserById(Long id);
+
+    User getUserByEmail(String email);
 }

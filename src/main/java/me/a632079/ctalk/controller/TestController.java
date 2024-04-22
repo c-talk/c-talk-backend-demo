@@ -31,7 +31,7 @@ public class TestController {
     @Resource
     private Snowflake snowflake;
 
-    @GetMapping("/pp")
+    @GetMapping("/foo")
     public String pp() {
         return "foo";
     }

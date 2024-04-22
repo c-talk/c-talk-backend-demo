@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class RegisterForm {
     private String nickName;
+    private String email;
     private String password;
     private String rePassword;
-    private String email;
 }
