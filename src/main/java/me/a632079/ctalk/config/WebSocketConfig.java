@@ -51,7 +51,7 @@ public class WebSocketConfig {
         return new SocketIOServer(config);
     }
 
-    // 只有为websocket配置了注解扫描器,
+    // 只有为websocket配置了注解扫描器
     // 对应的注解扫描器才能正常调用@OnConnect, @OnDisconnect, @OnEvent, 等方法
     @Bean
     public SpringAnnotationScanner springAnnotationScanner(SocketIOServer server) {
