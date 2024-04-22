@@ -1,5 +1,6 @@
 package me.a632079.ctalk.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @Document("token")
 public class Token {
 
+    @JsonIgnore
     @Indexed(unique = true)
     private Long uid;
 

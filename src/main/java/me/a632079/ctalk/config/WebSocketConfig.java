@@ -3,9 +3,14 @@ package me.a632079.ctalk.config;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.Data;
+import me.a632079.ctalk.po.Token;
+import me.a632079.ctalk.service.TokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * @className: WebSocketConfig
@@ -25,6 +30,9 @@ public class WebSocketConfig {
     @Value("${ws.server.port}")
     private int port;
 
+    @Resource
+    private TokenService tokenService;
+
     @Bean
     public SocketIOServer server() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
@@ -34,12 +42,10 @@ public class WebSocketConfig {
         //这个listener可以用来进行身份验证
         config.setAuthorizationListener(data -> {
             // http://host:${}?token=xxxxxxx
-            // 例如果使用上面的链接进行connect，可以使用如下代码获取用户密码信息，本文不做身份验证
             String token = data.getSingleUrlParam("token");
-            // 校验token的合法性，实际业务需要校验token是否过期等等，参考 spring-boot-demo-rbac-security 里的 JwtUtil
-            // 如果认证不通过会返回一个 Socket.EVENT_CONNECT_ERROR 事件
 
-            return true;
+            return tokenService.getToken(token)
+                               .isPresent();
         });
 
         return new SocketIOServer(config);

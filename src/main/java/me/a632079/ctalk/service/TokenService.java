@@ -1,5 +1,9 @@
 package me.a632079.ctalk.service;
 
+import me.a632079.ctalk.po.Token;
+
+import java.util.Optional;
+
 /**
  * @className: TokenService
  * @description: TokenService - TODO
@@ -7,4 +11,7 @@ package me.a632079.ctalk.service;
  * @author: haoduor
  */
 public interface TokenService {
+    Token createToken(Long id);
+
+    Optional<Token> getToken(String token);
 }
