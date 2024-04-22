@@ -2,8 +2,11 @@ package me.a632079.ctalk.controller;
 
 import cn.hutool.core.lang.Snowflake;
 
+import me.a632079.ctalk.enums.CTalkErrorCode;
+import me.a632079.ctalk.exception.CTalkExceptionFactory;
 import me.a632079.ctalk.service.UserService;
 
+import org.springframework.cglib.transform.ClassTransformerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +39,10 @@ public class TestController {
     @GetMapping("/list")
     public List<Integer> list() {
         return List.of(1,2,3);
+    }
+
+    @GetMapping("/error")
+    public void error() {
+        throw CTalkExceptionFactory.bizException(CTalkErrorCode.TEST_ERROR);
     }
 }

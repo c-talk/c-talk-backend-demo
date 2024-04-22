@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * @className: ServerRunner
  * @description: ServerRunner - TODO
@@ -15,14 +17,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class ServerRunner implements CommandLineRunner {
-    @Autowired
+    @Resource
     private SocketIOServer server;
 
     @Override
     public void run(String... args) throws Exception {
-
-        log.info("开启websocket 服务器");
-        server.startAsync().get();
-        log.info("websocket 服务器 开启成功");
+        // 开启websocket服务器
+        server.startAsync();
     }
 }

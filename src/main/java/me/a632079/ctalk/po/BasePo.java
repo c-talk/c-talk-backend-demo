@@ -26,4 +26,8 @@ public class BasePo {
     private Long updateUid;
 
     private boolean isDeleted;
+
+    public String getDocumentName() {
+        return "";
+    }
 }

@@ -1,4 +1,4 @@
-package me.a632079.ctalk.handler;
+package me.a632079.ctalk.response;
 
 import cn.hutool.json.JSONUtil;
 import me.a632079.ctalk.vo.ResultData;

@@ -1,6 +1,7 @@
 package me.a632079.ctalk.vo;
 
 import lombok.Data;
+import me.a632079.ctalk.exception.IErrorCode;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ResultData<T> {
-    private int status;
+    private String code;
     private String message;
     private T data;
 
@@ -25,16 +26,23 @@ public class ResultData<T> {
 
     public static <T> ResultData<T> success(T data) {
         ResultData<T> resultData = new ResultData<>();
-        resultData.setStatus(200);
+        resultData.setCode("00");
         resultData.setMessage("成功");
         resultData.setData(data);
         return resultData;
     }
 
-    public static <T> ResultData<T> fail(int code, String message) {
+    public static <T> ResultData<T> error(String code, String message) {
         ResultData<T> resultData = new ResultData<>();
-        resultData.setStatus(code);
+        resultData.setCode(code);
         resultData.setMessage(message);
+        return resultData;
+    }
+
+    public static <T> ResultData<T> error(IErrorCode errorCode) {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setCode(errorCode.getCode());
+        resultData.setMessage(errorCode.getMsg());
         return resultData;
     }
 }

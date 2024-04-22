@@ -1,4 +1,6 @@
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
   application:
     name: talk-center
   data:
@@ -35,7 +37,7 @@ ws:
 
 #minio 配置
 minio:
-  endpoint: http://http://192.168.63.187:9000
+  endpoint: http://192.168.63.187:9000
   bucke-name: pic
   access-key: minioadmin
   secret-key: minioadmin
