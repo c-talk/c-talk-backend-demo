@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * @author: haoduor
  */
 @Documented
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SkipPackage {
 }

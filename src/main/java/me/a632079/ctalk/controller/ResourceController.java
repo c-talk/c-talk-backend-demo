@@ -1,8 +1,12 @@
 package me.a632079.ctalk.controller;
 
 import io.github.thibaultmeyer.cuid.CUID;
+import me.a632079.ctalk.constant.CTalkConstant;
 import me.a632079.ctalk.dto.ResourceDto;
+import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.enums.ResourceType;
+import me.a632079.ctalk.exception.CTalkExceptionFactory;
+import me.a632079.ctalk.response.SkipPackage;
 import me.a632079.ctalk.service.ResourceService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,7 @@ public class ResourceController {
     @Resource
     private ResourceService resourceService;
 
+    @SkipPackage
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getResource(@PathVariable String id) {
         var resource = resourceService.getResource(id);
@@ -38,6 +43,7 @@ public class ResourceController {
         );
     }
 
+    @SkipPackage
     @DeleteMapping("/{id}")
     // TODO: 添加 CAS 鉴权？仅限管理员删除？
     public ResponseEntity<Void> deleteResource(@PathVariable String id) {
@@ -49,20 +55,21 @@ public class ResourceController {
     }
 
     @PostMapping("/")
-    @Validated // TODO: use validation
-    public ResponseEntity<List<Boolean>> createResource(@RequestParam("files") MultipartFile[] files) {
+    public List<Boolean> createResource(@RequestParam("files") MultipartFile[] files) {
         if (files == null || files.length == 0) {
-            return ResponseEntity.badRequest().build();
+            throw CTalkExceptionFactory.bizException(CTalkErrorCode.FILE_EMPTY);
         }
-        List<Boolean> list = Arrays.stream(files).map(v -> {
-                    ResourceDto dto = new ResourceDto();
-                    dto.setName(v.getOriginalFilename());
-                    dto.setId(CUID.randomCUID2().toString());
-                    dto.setType(ResourceType.Image); // Now just pass image
-                    dto.setMime(v.getContentType());
-                    return resourceService.addResource(dto);
-                }
-        ).collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return Arrays.stream(files)
+                     .map(v -> {
+                                 ResourceDto dto = new ResourceDto();
+                                 dto.setName(v.getOriginalFilename());
+                                 dto.setId(CUID.randomCUID2()
+                                               .toString());
+                                 dto.setType(ResourceType.Image); // Now just pass image
+                                 dto.setMime(v.getContentType());
+                                 return resourceService.addResource(dto);
+                             }
+                     )
+                     .collect(Collectors.toList());
     }
 }

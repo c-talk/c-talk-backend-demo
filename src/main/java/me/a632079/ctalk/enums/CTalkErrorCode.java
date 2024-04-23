@@ -18,6 +18,10 @@ public enum CTalkErrorCode implements IErrorCode {
 
     EMAIL_OR_PASSWORD_WRONG("201", "邮箱或密码错误"),
 
+    FILE_NOT_EXIST("301", "文件不存在"),
+
+    FILE_EMPTY("302", "文件为空"),
+
     TEST_ERROR("999", "测试错误");
 
     private final String code;

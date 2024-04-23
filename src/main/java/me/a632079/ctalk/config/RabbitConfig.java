@@ -20,16 +20,17 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("spring.rabbitmq")
 public class RabbitConfig {
 
-    private String host;
-    private String port;
-    private String username;
-    private String password;
-    private String virtualHost;
+    private String  host;
+    private Integer port;
+    private String  username;
+    private String  password;
+    private String  virtualHost;
 
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setAddresses(host);
+        connectionFactory.setPort(port);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         connectionFactory.setVirtualHost(virtualHost);

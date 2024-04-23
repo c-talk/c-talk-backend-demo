@@ -1,48 +1,54 @@
 package me.a632079.ctalk.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import io.minio.*;
 import io.minio.errors.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import me.a632079.ctalk.config.MinioConfig;
+import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.dto.ResourceDto;
 import me.a632079.ctalk.po.ResourcePo;
 import me.a632079.ctalk.service.ResourceService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-@Service
 @Log4j2
+@Service
 public class MinioResourceServiceImpl implements ResourceService {
 
     private final String COLLECTION_NAME = "resources";
 
     @Resource
-    private MinioConfig minioConfig;
+    private MinioClient client;
 
     @Resource
     private MongoTemplate mongoTemplate;
 
+    @Resource
+    private MapperFacade mapperFacade;
+
+    @Setter
+    @Getter
+    @Value("${minio.bucket-name}")
+    private String bucketName;
 
     public boolean existsResource(String id) {
         boolean isExist = this.mongoTemplate.collectionExists(COLLECTION_NAME);
         if (!isExist) return false;
         var po = this.mongoTemplate.findById(
-            id,
-            ResourcePo.class,
-            COLLECTION_NAME
+                id,
+                ResourcePo.class,
+                COLLECTION_NAME
         );
         return po != null;
     }
@@ -50,22 +56,26 @@ public class MinioResourceServiceImpl implements ResourceService {
     @SneakyThrows
     @Override
     public ResourceDto getResource(String resourceName) {
-        MinioClient client = this.minioConfig.minioClient();
         boolean isExist = this.mongoTemplate.collectionExists(COLLECTION_NAME);
         if (!isExist) return null;
 
         ResourcePo resourcePo = this.mongoTemplate.findById(resourceName, ResourcePo.class, COLLECTION_NAME);
         if (resourcePo == null) return null;
         try {
-            client.statObject(StatObjectArgs.builder().bucket(this.minioConfig.getBucketName()).object(resourceName).build());
+            client.statObject(StatObjectArgs.builder()
+                                            .bucket(bucketName)
+                                            .object(resourceName)
+                                            .build());
         } catch (ErrorResponseException ex) {
             log.error(ex);
             return null; // not found the object.
         }
-        GetObjectResponse response = client.getObject(GetObjectArgs.builder().bucket(this.minioConfig.getBucketName()).object(resourceName).build());
-        ResourceDto dto = new ResourceDto();
-        // TODO: modify the copyProperties
-        BeanUtil.copyProperties(resourcePo, dto);
+        GetObjectResponse response = client.getObject(GetObjectArgs.builder()
+                                                                   .bucket(bucketName)
+                                                                   .object(resourceName)
+                                                                   .build());
+        ResourceDto dto = mapperFacade.map(mapperFacade, ResourceDto.class);
+
         dto.setData(
                 response.readAllBytes()
         );
@@ -77,9 +87,11 @@ public class MinioResourceServiceImpl implements ResourceService {
     public boolean removeResource(String resourceName) {
         var isExist = existsResource(resourceName);
         if (!isExist) return true;
-        var client = this.minioConfig.minioClient();
         try {
-            client.removeObject(RemoveObjectArgs.builder().bucket(this.minioConfig.getBucketName()).object(resourceName).build());
+            client.removeObject(RemoveObjectArgs.builder()
+                                                .bucket(bucketName)
+                                                .object(resourceName)
+                                                .build());
         } catch (ErrorResponseException ex) {
             log.error(ex);
             return false;
@@ -99,12 +111,16 @@ public class MinioResourceServiceImpl implements ResourceService {
         dto.setCreated_at(now);
         dto.setUpdated_at(now);
         InputStream stream = new ByteArrayInputStream(dto.getData());
-        var client = minioConfig.minioClient();
         try {
-            client.putObject(PutObjectArgs.builder().bucket(minioConfig.getBucketName()).object(dto.getId()).contentType(dto.getMime()).stream(stream,
-                    dto.getData().length,
-                    -1
-            ).build());
+            client.putObject(PutObjectArgs.builder()
+                                          .bucket(bucketName)
+                                          .object(dto.getId())
+                                          .contentType(dto.getMime())
+                                          .stream(stream,
+                                                  dto.getData().length,
+                                                  -1
+                                          )
+                                          .build());
         } catch (ErrorResponseException ex) {
             log.error(ex);
             return false;

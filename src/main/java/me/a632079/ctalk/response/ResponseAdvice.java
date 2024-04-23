@@ -39,7 +39,9 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
         }
 
         if (Objects.nonNull(returnType.getMethod())
-                && String.class.equals(returnType.getMethod().getReturnType()) && Objects.isNull(body)) {
+                && String.class.equals(returnType.getMethod()
+                                                 .getReturnType())
+                && Objects.isNull(body)) {
             return JSONUtil.toJsonStr(ResultData.success(null));
         }
 
