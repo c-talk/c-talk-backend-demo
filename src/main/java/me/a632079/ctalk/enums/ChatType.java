@@ -1,10 +1,14 @@
 package me.a632079.ctalk.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+
 public enum ChatType {
     Private(1),
     Group(2);
 
-    private final int value;
+    @Getter(onMethod_ = @JsonValue)
+    private final Integer value;
 
     ChatType(int type) {
         this.value = type;

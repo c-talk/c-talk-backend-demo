@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class ExchangeAndQueueConfig {
     private RabbitAdmin rabbitAdmin;
 
     /**
-     * 生成交换机，绑定队列
+     * 生成交换机 绑定队列
      *
      * @param exchange   交换机
      * @param routingKey 路由
@@ -31,7 +32,7 @@ public class ExchangeAndQueueConfig {
      */
     public void createDirectBindQueue(String exchange, String routingKey, String queueName) {
         DirectExchange directExchange = new DirectExchange(exchange, false, false);
-        Queue queue = new Queue(queueName, false, false, false);
+        Queue queue = new Queue(queueName, false, true, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
@@ -39,5 +40,21 @@ public class ExchangeAndQueueConfig {
         rabbitAdmin.declareQueue(queue);
         rabbitAdmin.declareExchange(directExchange);
         rabbitAdmin.declareBinding(binding);
+    }
+
+    public void createPrivateMessageBind(Long uid) {
+        this.createDirectBindQueue("message.private", "user." + uid, "user." + uid);
+    }
+
+    public void removePrivateMessageBind(Long uid) {
+        this.createDirectBindQueue("message.private", "user." + uid, "user." + uid);
+    }
+
+    public void createGroupMessageBind(Long uid) {
+
+    }
+
+    public void removeGroupMessageBind(Long uid) {
+
     }
 }

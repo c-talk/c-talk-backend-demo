@@ -3,6 +3,7 @@ package me.a632079.ctalk;
 import com.rabbitmq.client.*;
 import me.a632079.ctalk.config.ExchangeAndQueueConfig;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,12 @@ public class MQTest {
     @Resource
     private ExchangeAndQueueConfig config;
 
+    @Resource
+    private RabbitAdmin rabbitAdmin;
+
+    @Resource
+    private ConnectionFactory connectionFactory;
+
     @Test
     public void createDynamicQueue() {
         config.createDirectBindQueue("exchange.test", "bibi", "bobo");
@@ -41,7 +48,6 @@ public class MQTest {
         Channel channel = connection.createChannel();
 
         System.out.println(channel.isOpen());
-
         channel.basicConsume("sms", true, new SimpleConsumer(channel));
 
         TimeUnit.SECONDS.sleep(20);

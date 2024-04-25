@@ -29,6 +29,14 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Token createToken(Long id) {
+        Optional<Token> one = tokenRepository.findOne(Example.of(Token.builder()
+                                                                      .uid(id)
+                                                                      .build()));
+
+        if (one.isPresent()) {
+            return one.get();
+        }
+
         Token token = Token.builder()
                            .uid(id)
                            // TODO 令牌生成方法需要修改
