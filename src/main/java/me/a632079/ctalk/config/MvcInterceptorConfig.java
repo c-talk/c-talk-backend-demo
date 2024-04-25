@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 /**
  * @className: MvcInterceptorConfig
- * @description: MvcInterceptorConfig - TODO
+ * @description: MvcInterceptorConfig - 拦截器注册
  * @version: v1.0.0
  * @author: haoduor
  */

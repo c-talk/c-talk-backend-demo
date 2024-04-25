@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 /**
  * @className: ExchangeAndQueueConfig
- * @description: ExchangeAndQueueConfig - TODO
+ * @description: ExchangeAndQueueConfig - 交换机和队列配置
  * @version: v1.0.0
  * @author: haoduor
  */

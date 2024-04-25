@@ -5,7 +5,7 @@ import me.a632079.ctalk.exception.IErrorCode;
 
 /**
  * @className: CTalkErrorCode
- * @description: CTalkErrorCode - TODO
+ * @description: CTalkErrorCode - 错误码
  * @version: v1.0.0
  * @author: haoduor
  */

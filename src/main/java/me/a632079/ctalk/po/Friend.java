@@ -8,11 +8,9 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * @className: Friend
- * @description: Friend - TODO
+ * @description: Friend - 好友
  * @version: v1.0.0
  * @author: haoduor
  */
