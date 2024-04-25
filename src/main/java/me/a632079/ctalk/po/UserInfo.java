@@ -2,7 +2,7 @@ package me.a632079.ctalk.po;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
+import org.springframework.amqp.rabbit.connection.Connection;
 import lombok.Data;
 
 import java.io.IOException;

@@ -4,16 +4,14 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.config.ExchangeAndQueueConfig;
 import me.a632079.ctalk.consumer.PrivateMessageConsumer;
 import me.a632079.ctalk.po.Token;
-import me.a632079.ctalk.po.User;
 import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.TokenService;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.connection.Connection;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -72,8 +70,8 @@ public class MessageEventHandler {
         // 创建消息队列
         exchangeAndQueueConfig.createPrivateMessageBind(uid);
 
-        Connection connection = connectionFactory.newConnection();
-        Channel channel = connection.createChannel();
+        Connection connection = connectionFactory.createConnection();
+        Channel channel = connection.createChannel(true);
 
         channel.basicConsume("user." + uid, new PrivateMessageConsumer(channel, info));
 
