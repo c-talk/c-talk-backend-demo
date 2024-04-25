@@ -62,6 +62,9 @@ public class MessageEventHandler {
 
         Long uid = tokenOptional.get()
                                 .getUid();
+
+        log.info("用户: {} 接入服务器", uid);
+
         UserInfo info = new UserInfo();
         info.setId(uid);
         info.setClient(client);
@@ -93,6 +96,8 @@ public class MessageEventHandler {
         }
 
         userInfoMap.remove(uid);
+
+        log.info("用户: {} 离开服务器", uid);
     }
 
 }

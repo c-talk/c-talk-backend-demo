@@ -7,6 +7,8 @@ import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.service.TokenService;
 import me.a632079.ctalk.vo.MessageForm;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,10 @@ public class MessageServiceImpl implements MessageService {
     private MongoTemplate mongoTemplate;
 
     @Resource
-    private TokenService tokenService;
+    private ConcurrentHashMap<Long, UserInfo> userInfoMap;
 
     @Resource
-    private ConcurrentHashMap<Long, UserInfo> userInfoMap;
+    private AmqpTemplate amqpTemplate;
 
     @Resource
     private MapperFacade mapperFacade;
@@ -43,6 +45,8 @@ public class MessageServiceImpl implements MessageService {
         if (Objects.nonNull(info)) {
             info.getClient()
                 .sendEvent("private", message);
+        } else {
+            amqpTemplate.convertAndSend("user." + uid, message);
         }
     }
 

@@ -8,6 +8,7 @@ import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
 import me.a632079.ctalk.vo.LoginForm;
 import me.a632079.ctalk.vo.RegisterForm;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,4 +74,8 @@ public class MainController {
         userService.addUser(form);
     }
 
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
 }
