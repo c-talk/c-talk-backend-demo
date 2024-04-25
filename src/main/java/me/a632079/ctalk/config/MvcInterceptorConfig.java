@@ -25,6 +25,6 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
 
         registry.addInterceptor(userInfoInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/register");
+                .excludePathPatterns("/login", "/register", "/ping");
     }
 }

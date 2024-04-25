@@ -8,10 +8,7 @@ import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
 import me.a632079.ctalk.vo.LoginForm;
 import me.a632079.ctalk.vo.RegisterForm;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -36,7 +33,7 @@ public class MainController {
     @Resource
     private Argon2Util argon2Util;
 
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public User login(@RequestBody LoginForm form, HttpSession session) {
         // TODO 需要验证码校验
         User user = userService.getUserByEmail(form.getEmail());
@@ -57,7 +54,7 @@ public class MainController {
         return user;
     }
 
-    @RequestMapping("/register")
+    @PostMapping("/register")
     public void register(@RequestBody RegisterForm form) {
         // 2次密码
         if (!form.getPassword()

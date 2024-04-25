@@ -16,19 +16,19 @@ import java.time.LocalDateTime;
 public class ResultData<T> {
     private String code;
     private String message;
-    private T data;
+    private T      result;
 
-    private final LocalDateTime timeStamp;
+    private final LocalDateTime ts;
 
     public ResultData (){
-        this.timeStamp = LocalDateTime.now();
+        this.ts = LocalDateTime.now();
     }
 
     public static <T> ResultData<T> success(T data) {
         ResultData<T> resultData = new ResultData<>();
         resultData.setCode("00");
         resultData.setMessage("成功");
-        resultData.setData(data);
+        resultData.setResult(data);
         return resultData;
     }
 
