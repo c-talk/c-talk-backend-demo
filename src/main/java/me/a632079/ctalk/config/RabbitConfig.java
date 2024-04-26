@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @className: RabbitConfig
- * @description: RabbitConfig - TODO
+ * @description: RabbitConfig - rabbitMq配置
  * @version: v1.0.0
  * @author: haoduor
  */

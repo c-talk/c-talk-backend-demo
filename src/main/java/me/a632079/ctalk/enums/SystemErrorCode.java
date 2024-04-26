@@ -6,7 +6,7 @@ import me.a632079.ctalk.exception.IErrorCode;
 
 /**
  * @className: SystemErrorCode
- * @description: SystemErrorCode - TODO
+ * @description: SystemErrorCode - 系统错误码
  * @version: v1.0.0
  * @author: haoduor
  */

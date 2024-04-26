@@ -2,13 +2,12 @@ package me.a632079.ctalk.controller;
 
 import me.a632079.ctalk.po.Token;
 import me.a632079.ctalk.service.TokenService;
+import me.a632079.ctalk.util.UserInfoUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-import java.util.Objects;
 
 /**
  * @className: TokenService
@@ -25,13 +24,7 @@ public class TokenController {
     private TokenService tokenService;
 
     @GetMapping("/get")
-    public Token getToken(HttpSession session) {
-        Long id = (Long) session.getAttribute("id");
-
-        if (Objects.isNull(id)) {
-            return null;
-        }
-
-        return tokenService.createToken(id);
+    public Token getToken() {
+        return tokenService.createToken(UserInfoUtil.getId());
     }
 }

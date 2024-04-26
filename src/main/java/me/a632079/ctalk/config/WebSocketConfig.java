@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.Data;
 import me.a632079.ctalk.po.Token;
+import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.TokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @className: WebSocketConfig
@@ -56,5 +58,10 @@ public class WebSocketConfig {
     @Bean
     public SpringAnnotationScanner springAnnotationScanner(SocketIOServer server) {
         return new SpringAnnotationScanner(server);
+    }
+
+    @Bean
+    public ConcurrentHashMap<Long, UserInfo> userInfoMap() {
+        return new ConcurrentHashMap<>(1024);
     }
 }

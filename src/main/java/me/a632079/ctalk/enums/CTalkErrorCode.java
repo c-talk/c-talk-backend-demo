@@ -5,7 +5,7 @@ import me.a632079.ctalk.exception.IErrorCode;
 
 /**
  * @className: CTalkErrorCode
- * @description: CTalkErrorCode - TODO
+ * @description: CTalkErrorCode - 错误码
  * @version: v1.0.0
  * @author: haoduor
  */
@@ -21,6 +21,8 @@ public enum CTalkErrorCode implements IErrorCode {
     FILE_NOT_EXIST("301", "文件不存在"),
 
     FILE_EMPTY("302", "文件为空"),
+
+    TODO("998", "空置错误"),
 
     TEST_ERROR("999", "测试错误");
 
