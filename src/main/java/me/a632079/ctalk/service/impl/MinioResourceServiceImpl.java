@@ -74,7 +74,7 @@ public class MinioResourceServiceImpl implements ResourceService {
                                                                    .bucket(bucketName)
                                                                    .object(resourceName)
                                                                    .build());
-        ResourceDto dto = mapperFacade.map(mapperFacade, ResourceDto.class);
+        ResourceDto dto = mapperFacade.map(resourcePo, ResourceDto.class);
 
         dto.setData(
                 response.readAllBytes()
@@ -125,6 +125,8 @@ public class MinioResourceServiceImpl implements ResourceService {
             log.error(ex);
             return false;
         }
+        ResourcePo resourcePo = mapperFacade.map(dto, ResourcePo.class);
+        this.mongoTemplate.insert(resourcePo, COLLECTION_NAME);
         return true;
     }
 }
