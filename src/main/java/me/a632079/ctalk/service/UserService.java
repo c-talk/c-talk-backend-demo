@@ -1,7 +1,10 @@
 package me.a632079.ctalk.service;
 
 import me.a632079.ctalk.po.User;
+import me.a632079.ctalk.vo.PageVo;
 import me.a632079.ctalk.vo.RegisterForm;
+import me.a632079.ctalk.vo.UserPageForm;
+import me.a632079.ctalk.vo.UserVo;
 
 /**
  * @className: UserService
@@ -17,6 +20,8 @@ public interface UserService {
     User getUserById(Long id);
 
     User getUserByEmail(String email);
+
+    PageVo<UserVo> pageUser(UserPageForm form);
 
     boolean exist(Long id);
 }
