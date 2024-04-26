@@ -1,6 +1,9 @@
 package me.a632079.ctalk.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
@@ -17,8 +20,10 @@ public class BasePo {
     @MongoId
     private Long id;
 
+    @CreatedDate
     private LocalDateTime createTime;
 
+    @LastModifiedDate
     private LocalDateTime updateTime;
 
     private Long createUid;
@@ -27,6 +32,7 @@ public class BasePo {
 
     private boolean isDeleted;
 
+    @JsonIgnore
     public String getDocumentName() {
         return "";
     }

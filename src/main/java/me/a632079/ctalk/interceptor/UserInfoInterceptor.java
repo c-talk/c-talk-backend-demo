@@ -1,5 +1,6 @@
 package me.a632079.ctalk.interceptor;
 
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.util.UserInfoUtil;
@@ -25,15 +26,12 @@ public class UserInfoInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Object id = request.getSession()
-                           .getAttribute("id");
-
-        if (Objects.isNull(id)) {
+        if (!StpUtil.isLogin()) {
             return false;
         }
 
         UserInfo info = new UserInfo();
-        info.setId((Long) id);
+        info.setId(StpUtil.getLoginIdAsLong());
 
         UserInfoUtil.setUserInfo(info);
         return true;

@@ -14,7 +14,10 @@ import me.a632079.ctalk.exception.IErrorCode;
 public enum CTalkErrorCode implements IErrorCode {
 
     PASSWORD_NOT_PASS("101", "两次密码输入不一致"),
-    EMAIl("102", "邮件已被占用"),
+
+    EMAIl("102", "邮箱已被占用"),
+
+    HAS_LOGIN("103", "用户已登录"),
 
     EMAIL_OR_PASSWORD_WRONG("201", "邮箱或密码错误"),
 

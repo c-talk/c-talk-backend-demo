@@ -9,6 +9,7 @@ import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
 import me.a632079.ctalk.vo.RegisterForm;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -58,11 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        User user = User.builder()
-                        .email(email)
-                        .build();
-        return userRepository.findOne(Example.of(user))
-                             .orElse(null);
+        return userRepository.findOneByEmailEquals(email);
     }
 
     @Override

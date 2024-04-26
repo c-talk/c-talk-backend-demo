@@ -1,5 +1,8 @@
 package me.a632079.ctalk.controller;
 
+import ch.qos.logback.classic.spi.EventArgUtil;
+import cn.dev33.satoken.stp.StpUtil;
+import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.exception.CTalkExceptionFactory;
 import me.a632079.ctalk.po.User;
@@ -8,6 +11,7 @@ import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
 import me.a632079.ctalk.vo.LoginForm;
 import me.a632079.ctalk.vo.RegisterForm;
+import me.a632079.ctalk.vo.UserVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,8 +37,16 @@ public class MainController {
     @Resource
     private Argon2Util argon2Util;
 
+    @Resource
+    private MapperFacade mapperFacade;
+
     @PostMapping("/login")
-    public User login(@RequestBody LoginForm form, HttpSession session) {
+    public UserVo login(@RequestBody LoginForm form, HttpSession session) {
+
+        if (StpUtil.isLogin()) {
+            throw CTalkExceptionFactory.bizException(CTalkErrorCode.HAS_LOGIN);
+        }
+
         // TODO 需要验证码校验
         User user = userService.getUserByEmail(form.getEmail());
 
@@ -48,22 +60,29 @@ public class MainController {
             throw CTalkExceptionFactory.bizException(CTalkErrorCode.EMAIL_OR_PASSWORD_WRONG);
         }
 
-        //id写入session
-        session.setAttribute("id", user.getId());
+        //id写入sa-token
+        StpUtil.login(user.getId());
 
-        return user;
+        UserVo userVo = mapperFacade.map(user, UserVo.class);
+        userVo.setToken(StpUtil.getTokenValue());
+        return userVo;
     }
 
     @PostMapping("/register")
     public void register(@RequestBody RegisterForm form) {
+        if (StpUtil.isLogin()) {
+            throw CTalkExceptionFactory.bizException(CTalkErrorCode.HAS_LOGIN);
+        }
+
         // 2次密码
         if (!form.getPassword()
                  .equals(form.getRePassword())) {
             throw CTalkExceptionFactory.bizException(CTalkErrorCode.PASSWORD_NOT_PASS);
         }
 
+        User user = userService.getUserByEmail(form.getEmail());
         // 邮箱唯一
-        if (Objects.nonNull(userService.getUserByEmail(form.getEmail()))) {
+        if (Objects.nonNull(user)) {
             throw CTalkExceptionFactory.bizException(CTalkErrorCode.EMAIl);
         }
 
