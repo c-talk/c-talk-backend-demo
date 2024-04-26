@@ -3,11 +3,11 @@ package me.a632079.ctalk.controller;
 import me.a632079.ctalk.po.User;
 import me.a632079.ctalk.repository.UserRepository;
 import me.a632079.ctalk.service.UserService;
+import me.a632079.ctalk.vo.PageVo;
+import me.a632079.ctalk.vo.UserPageForm;
+import me.a632079.ctalk.vo.UserVo;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,12 +31,12 @@ public class UserController {
 
     @GetMapping("/list")
     public List<User> list() {
-        userRepository.findAll();
         return userRepository.findAll();
     }
 
-    @GetMapping("/page")
-    public void page() {
+    @PostMapping("/page")
+    public PageVo<UserVo> page(@RequestBody UserPageForm form) {
+        return userService.pageUser(form);
     }
 
     @PostMapping("/set/{id}")
@@ -44,6 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/get/{id}")
-    public void get() {
+    public User get(@PathVariable Long id) {
+        return userRepository.findById(id)
+                             .orElse(null);
     }
 }

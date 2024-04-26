@@ -1,5 +1,6 @@
 package me.a632079.ctalk.controller;
 
+import cn.hutool.core.lang.Snowflake;
 import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.exception.CTalkExceptionFactory;
 import me.a632079.ctalk.po.Friend;
@@ -33,11 +34,17 @@ public class FriendController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private Snowflake snowflake;
+
     @GetMapping("/list/{id}")
     public List<Friend> list(@PathVariable Long id) {
-        Friend friend = new Friend();
-        friend.setUid(id);
-        return repository.findAll(Example.of(friend));
+        return repository.findAllByUid(id);
+    }
+
+    @GetMapping("/list/{id}/with/message")
+    public List<Friend> listWithMessage(@PathVariable Long id) {
+        return repository.findAllByUid(id);
     }
 
     @GetMapping("/page/{id}")
@@ -59,6 +66,7 @@ public class FriendController {
                               .uid(UserInfoUtil.getId())
                               .build();
 
+        friend.setId(snowflake.nextId());
         repository.insert(friend);
     }
 

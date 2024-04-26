@@ -1,5 +1,7 @@
 package me.a632079.ctalk.config;
 
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.stp.StpUtil;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.Data;

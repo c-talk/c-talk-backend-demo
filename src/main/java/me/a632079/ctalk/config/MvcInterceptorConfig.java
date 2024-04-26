@@ -30,20 +30,13 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
 
+        // 跨域请求
         registry.addInterceptor(corsInterceptor)
                 .addPathPatterns("/**");
 
+        // 用户信息工具类
         registry.addInterceptor(userInfoInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/register", "/ping");
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
-                .maxAge(3600)
-                .allowCredentials(false);
     }
 }

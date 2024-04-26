@@ -2,6 +2,7 @@ package me.a632079.ctalk.controller;
 
 import ch.qos.logback.classic.spi.EventArgUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.exception.CTalkExceptionFactory;
@@ -25,6 +26,7 @@ import java.util.Objects;
  * @author: haoduor
  */
 
+@Slf4j
 @RestController
 public class MainController {
 
@@ -62,6 +64,8 @@ public class MainController {
 
         //id写入sa-token
         StpUtil.login(user.getId());
+
+        log.info("用户{} 登录", user.getId());
 
         UserVo userVo = mapperFacade.map(user, UserVo.class);
         userVo.setToken(StpUtil.getTokenValue());

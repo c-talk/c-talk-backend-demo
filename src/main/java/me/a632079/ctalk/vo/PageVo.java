@@ -1,0 +1,44 @@
+package me.a632079.ctalk.vo;
+
+import lombok.Data;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+/**
+ * @className: PageVo
+ * @description: PageVo - TODO
+ * @version: v1.0.0
+ * @author: haoduor
+ */
+
+
+@Data
+public class PageVo<T> {
+    private List<T> items;
+    private Long    total;
+    private Integer page;
+    private Integer pageSize;
+
+    public static <T> PageVo<T> of(Page<T> page) {
+        PageVo<T> pageVo = new PageVo<>();
+        pageVo.setItems(page.getContent());
+        pageVo.setPage(page.getNumber());
+        pageVo.setPageSize(page.getSize());
+        pageVo.setTotal(page.getTotalElements());
+
+        return pageVo;
+    }
+
+    public static <T> PageVo<T> of(List<T> data, PageForm form, Long total) {
+        PageVo<T> pageVo = new PageVo<>();
+        pageVo.setItems(data);
+        pageVo.setPage(form.getPageNum());
+        pageVo.setPageSize(form.getPageSize());
+        pageVo.setTotal(total);
+
+        return pageVo;
+    }
+
+
+}

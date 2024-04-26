@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         def = "{uid: 1, friendId: 1}",
         unique = true
 )
-public class Friend {
+public class Friend extends BasePo {
     @Indexed
     private Long uid;
     @Indexed

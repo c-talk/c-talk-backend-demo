@@ -4,6 +4,8 @@ import me.a632079.ctalk.po.Friend;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @className: FriendRepository
  * @description: FriendRepository - TODO
@@ -12,4 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FriendRepository extends MongoRepository<Friend, Long> {
+    List<Friend> findAllByUid(Long uid);
 }
