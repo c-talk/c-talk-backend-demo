@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
@@ -20,10 +22,10 @@ public class BasePo {
     @MongoId
     private Long id;
 
-    @CreatedDate
+    @Indexed(direction = IndexDirection.DESCENDING)
     private LocalDateTime createTime;
 
-    @LastModifiedDate
+    @Indexed
     private LocalDateTime updateTime;
 
     private Long createUid;

@@ -11,6 +11,8 @@ public interface MessageService {
 
     void addGroupMessage(MessageForm form);
 
+    List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver);
+
     List<Message> getPrivateMessage(Long senderId, Long receiverId);
 
     List<Message> getGroupMessage(Long id);

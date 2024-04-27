@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("user")
 public class User extends BasePo {
 
+    @Indexed
     private String nickName;
 
     @JsonIgnore

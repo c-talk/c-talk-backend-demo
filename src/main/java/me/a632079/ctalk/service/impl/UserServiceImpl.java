@@ -57,8 +57,6 @@ public class UserServiceImpl implements UserService {
                         .verify(true)
                         .build();
 
-        user.setId(snowflake.nextId());
-
         return userRepository.insert(user);
     }
 
