@@ -11,7 +11,6 @@ import lombok.Data;
 
 @Data
 public class UserSetForm {
-    private Long   id;
     private String nickName;
     private String avatar;
 }

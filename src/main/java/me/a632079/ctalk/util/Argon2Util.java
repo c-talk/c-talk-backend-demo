@@ -1,6 +1,7 @@
 package me.a632079.ctalk.util;
 
 import de.mkammerer.argon2.Argon2;
+import me.a632079.ctalk.po.User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,5 +26,9 @@ public class Argon2Util {
 
     public boolean verify(String hash, String data) {
         return argon2.verify(hash, data.toCharArray());
+    }
+
+    public boolean verify(User u, String data) {
+        return argon2.verify(u.getPassword(), data.toCharArray());
     }
 }
