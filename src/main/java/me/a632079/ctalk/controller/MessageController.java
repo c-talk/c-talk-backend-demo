@@ -3,10 +3,9 @@ package me.a632079.ctalk.controller;
 import me.a632079.ctalk.po.Message;
 import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.vo.MessageForm;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import me.a632079.ctalk.vo.MessageHistoryForm;
+import me.a632079.ctalk.vo.PageVo;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -31,5 +30,15 @@ public class MessageController {
     @PostMapping("/send/group")
     public Message sendGroupMessage(@RequestBody MessageForm form) {
         return messageService.addGroupMessage(form);
+    }
+
+    @PostMapping("/history/private")
+    public PageVo<Message> pagePrivateMessage(@RequestBody MessageHistoryForm form) {
+        return messageService.pagePrivateMessage(form);
+    }
+
+    @PostMapping("/history/group")
+    public PageVo<Message> pageGroupMessage(@RequestBody MessageHistoryForm form) {
+        return messageService.pageGroupMessage(form);
     }
 }

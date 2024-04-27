@@ -1,20 +1,19 @@
 package me.a632079.ctalk.service.impl;
 
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.internal.operation.AggregateOperation;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.enums.ChatType;
 import me.a632079.ctalk.po.Message;
+import me.a632079.ctalk.po.User;
 import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.MessageService;
-import me.a632079.ctalk.service.TokenService;
 import me.a632079.ctalk.vo.MessageForm;
+import me.a632079.ctalk.vo.MessageHistoryForm;
+import me.a632079.ctalk.vo.PageVo;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class MessageServiceImpl implements MessageService {
     @Resource
-    private MongoTemplate mongoTemplate;
+    private MongoTemplate template;
 
     @Resource
     private ConcurrentHashMap<Long, UserInfo> userInfoMap;
@@ -44,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
         message.setChatType(ChatType.Private);
         message.genIdent();
 
-        mongoTemplate.insert(message, message.getDocumentName());
+        template.insert(message, message.getDocumentName());
 
         Long uid = message.getReceiver();
 
@@ -62,8 +61,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message addGroupMessage(MessageForm form) {
-        Message message = mapperFacade.map(form, Message.class);
-        return message;
+        return mapperFacade.map(form, Message.class);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class MessageServiceImpl implements MessageService {
         Aggregation.group("identify")
                    .first("$$ROOT");
 
-        AggregationResults<Message> results = mongoTemplate.aggregate(Aggregation.newAggregation(operations), message.getDocumentName(), Message.class);
+        AggregationResults<Message> results = template.aggregate(Aggregation.newAggregation(operations), message.getDocumentName(), Message.class);
 
         return results.getMappedResults();
     }
@@ -96,7 +94,7 @@ public class MessageServiceImpl implements MessageService {
 
         Query query = new Query();
 
-        return mongoTemplate.find(
+        return template.find(
                 query.with(Sort.by(Sort.Direction.DESC, "createTime")),
                 Message.class,
                 message.getDocumentName());
@@ -104,6 +102,26 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getGroupMessage(Long id) {
+        return null;
+    }
+
+    @Override
+    public PageVo<Message> pagePrivateMessage(MessageHistoryForm form) {
+        Query query = new Query();
+        Sort sort = Sort.by(Sort.Direction.DESC, "createTime");
+        PageRequest pageRequest = PageRequest.of(form.getPageNum() - 1, form.getPageSize(), sort);
+
+        Message message = mapperFacade.map(form, Message.class);
+
+        Long count = template.count(query, Message.class, message.getDocumentName());
+
+        List<Message> result = template.find(query.with(pageRequest), Message.class, message.getDocumentName());
+
+        return PageVo.of(result, form, count);
+    }
+
+    @Override
+    public PageVo<Message> pageGroupMessage(MessageHistoryForm form) {
         return null;
     }
 }
