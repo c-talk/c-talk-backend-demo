@@ -7,9 +7,9 @@ import me.a632079.ctalk.vo.MessageForm;
 import java.util.List;
 
 public interface MessageService {
-    void addPrivateMessage(MessageForm form);
+    Message addPrivateMessage(MessageForm form);
 
-    void addGroupMessage(MessageForm form);
+    Message addGroupMessage(MessageForm form);
 
     List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver);
 

@@ -39,7 +39,7 @@ public class MessageServiceImpl implements MessageService {
     private MapperFacade mapperFacade;
 
     @Override
-    public void addPrivateMessage(MessageForm form) {
+    public Message addPrivateMessage(MessageForm form) {
         Message message = mapperFacade.map(form, Message.class);
         message.setChatType(ChatType.Private);
         message.genIdent();
@@ -56,12 +56,14 @@ public class MessageServiceImpl implements MessageService {
         } else {
             amqpTemplate.convertAndSend("user." + uid, message);
         }
+
+        return message;
     }
 
     @Override
-    public void addGroupMessage(MessageForm form) {
+    public Message addGroupMessage(MessageForm form) {
         Message message = mapperFacade.map(form, Message.class);
-
+        return message;
     }
 
     @Override
