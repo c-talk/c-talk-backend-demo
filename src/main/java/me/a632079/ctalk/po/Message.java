@@ -1,10 +1,12 @@
 package me.a632079.ctalk.po;
 
 import cn.hutool.crypto.SecureUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.a632079.ctalk.enums.ChatType;
 import me.a632079.ctalk.enums.MessageType;
+import me.a632079.ctalk.util.MessageUtil;
 import org.springframework.data.annotation.Transient;
 
 import java.util.Map;
@@ -18,14 +20,18 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Message extends BasePo {
-    private String content;
+    private String      content;
     private MessageType type;
 
     @Transient
+    @JsonIgnore
     private ChatType chatType;
 
     private Long receiver;
     private Long sender;
+
+    @JsonIgnore
+    private String identify;
 
     private Map<String, Object> extra_fields;
 
@@ -37,7 +43,7 @@ public class Message extends BasePo {
 
         switch (chatType) {
             case Private:
-                return "message:chat:" + sort(receiver, sender);
+                return "message:chat:" + MessageUtil.hash(receiver, sender);
             case Group:
                 return "message:group:" + receiver;
             default:
@@ -45,12 +51,7 @@ public class Message extends BasePo {
         }
     }
 
-    private String sort(Long a, Long b) {
-        String res = "";
-        if (a > b) {
-            return SecureUtil.md5(res + a + b);
-        } else {
-            return SecureUtil.md5(res + b + a);
-        }
+    public void genIdent() {
+        this.identify = MessageUtil.hash(receiver, sender);
     }
 }

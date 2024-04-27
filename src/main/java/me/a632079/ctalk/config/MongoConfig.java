@@ -30,12 +30,12 @@ public class MongoConfig {
     @Bean
     public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory, MappingMongoConverter converter) {
         MongoTemplate mongoTemplate = new MongoTemplate(databaseFactory, converter);
-        mongoTemplate.setEntityCallbacks(EntityCallbacks.create(new BeforeConvert()));
+        mongoTemplate.setEntityCallbacks(EntityCallbacks.create(new BeforeConverter()));
         return mongoTemplate;
     }
 
     // 转换器
-    private class BeforeConvert implements BeforeConvertCallback<Object> {
+    private class BeforeConverter implements BeforeConvertCallback<Object> {
 
         @Override
         public Object onBeforeConvert(Object entity, String collection) {

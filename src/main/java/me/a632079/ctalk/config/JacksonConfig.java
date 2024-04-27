@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializerBase;
 import org.apache.tomcat.jni.Local;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
@@ -18,17 +20,14 @@ import java.time.LocalDateTime;
  */
 
 @Configuration
-public class JacksonConfig extends SimpleModule {
-    public JacksonConfig() {
-        this.addSerializer(Long.class, ToStringSerializer.instance);
-        this.addSerializer(Long.TYPE, ToStringSerializer.instance);
-        this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-        // this.addSerializer(LocalDateTime.class, new ToStringSerializerBase(LocalDateTime.class) {
-        //
-        //     @Override
-        //     public String valueToString(Object o) {
-        //         return null;
-        //     }
-        // });
+public class JacksonConfig {
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+        return jacksonObjectMapperBuilder ->
+                jacksonObjectMapperBuilder.serializerByType(Long.class, ToStringSerializer.instance)
+                                          .serializerByType(Long.TYPE, ToStringSerializer.instance)
+                                          .serializerByType(BigDecimal.class, ToStringSerializer.instance);
     }
+
 }

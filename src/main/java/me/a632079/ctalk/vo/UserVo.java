@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 @Data
 public class UserVo {
+    private Long Id;
+
     private String nickName;
 
     @Indexed(unique = true)

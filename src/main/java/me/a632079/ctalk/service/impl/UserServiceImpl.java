@@ -40,8 +40,6 @@ public class UserServiceImpl implements UserService {
 
     private final Argon2Util argon2Util;
 
-    private final Snowflake snowflake;
-
     private final MapperFacade mapperFacade;
 
     public static final String DOCUMENT_NAME = "user";

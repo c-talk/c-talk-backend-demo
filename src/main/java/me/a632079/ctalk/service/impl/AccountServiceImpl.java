@@ -22,6 +22,7 @@ public class AccountServiceImpl implements AccountService
     private AccountRepository accountRepository;
 
     private final String COLLECTION_NAME = "accounts";
+
     private final Argon2Util argon2Util;
 
     @Override
