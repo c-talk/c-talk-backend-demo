@@ -17,7 +17,6 @@ public class UserVo {
 
     private String nickName;
 
-    @Indexed(unique = true)
     private String email;
 
     private String avatar;

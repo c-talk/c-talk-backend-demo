@@ -1,6 +1,7 @@
 package me.a632079.ctalk.po;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +19,12 @@ import java.util.Date;
 @Document("resources")
 public class ResourcePo {
     @MongoId
-    private String id; // Cidr
-    private String name; // maybe nullable?
-    private String mime;
+    private String       id; // Cidr
+    private String       name; // maybe nullable?
+    private String       mime;
     private ResourceType type;
-    private Date created_at;
+    private Date         created_at;
+
+    @JsonIgnore
     private Date updated_at;
 }

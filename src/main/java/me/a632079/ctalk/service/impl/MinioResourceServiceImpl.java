@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
@@ -75,10 +77,7 @@ public class MinioResourceServiceImpl implements ResourceService {
                                                                    .object(resourceName)
                                                                    .build());
         ResourceDto dto = mapperFacade.map(resourcePo, ResourceDto.class);
-
-        dto.setData(
-                response.readAllBytes()
-        );
+        dto.setBytes(response.readAllBytes());
         return dto;
     }
 
@@ -104,29 +103,33 @@ public class MinioResourceServiceImpl implements ResourceService {
 
     @SneakyThrows
     @Override
-    public boolean addResource(ResourceDto dto) {
+    public ResourcePo addResource(ResourceDto dto) {
         var isExist = existsResource(dto.getId());
-        if (!isExist) return false;
+        if (isExist) {
+            return null;
+        }
         Date now = new Date();
         dto.setCreated_at(now);
         dto.setUpdated_at(now);
-        InputStream stream = new ByteArrayInputStream(dto.getData());
+        InputStream stream = dto.getData()
+                                .getInputStream();
         try {
             client.putObject(PutObjectArgs.builder()
                                           .bucket(bucketName)
                                           .object(dto.getId())
                                           .contentType(dto.getMime())
                                           .stream(stream,
-                                                  dto.getData().length,
+                                                  dto.getData()
+                                                     .getSize(),
                                                   -1
                                           )
                                           .build());
         } catch (ErrorResponseException ex) {
             log.error(ex);
-            return false;
+            return null;
         }
         ResourcePo resourcePo = mapperFacade.map(dto, ResourcePo.class);
         this.mongoTemplate.insert(resourcePo, COLLECTION_NAME);
-        return true;
+        return resourcePo;
     }
 }

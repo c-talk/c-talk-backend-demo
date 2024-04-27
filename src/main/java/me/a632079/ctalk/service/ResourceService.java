@@ -6,9 +6,10 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface ResourceService
-{
+public interface ResourceService {
     ResourceDto getResource(String resourceName);
+
     boolean removeResource(String resourceName);
-    boolean addResource(ResourceDto dto);
+
+    ResourcePo addResource(ResourceDto dto);
 }
