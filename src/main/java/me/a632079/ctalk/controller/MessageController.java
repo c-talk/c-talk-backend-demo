@@ -5,6 +5,7 @@ import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.vo.MessageForm;
 import me.a632079.ctalk.vo.MessageHistoryForm;
 import me.a632079.ctalk.vo.PageVo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,12 +34,12 @@ public class MessageController {
     }
 
     @PostMapping("/history/private")
-    public PageVo<Message> pagePrivateMessage(@RequestBody MessageHistoryForm form) {
+    public PageVo<Message> pagePrivateMessage(@RequestBody @Validated MessageHistoryForm form) {
         return messageService.pagePrivateMessage(form);
     }
 
     @PostMapping("/history/group")
-    public PageVo<Message> pageGroupMessage(@RequestBody MessageHistoryForm form) {
+    public PageVo<Message> pageGroupMessage(@RequestBody @Validated MessageHistoryForm form) {
         return messageService.pageGroupMessage(form);
     }
 }

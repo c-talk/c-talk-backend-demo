@@ -1,9 +1,6 @@
 package me.a632079.ctalk.po;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("friend")
+@EqualsAndHashCode(callSuper = true)
 @CompoundIndex(
         name = "uid_friendId_idx",
         def = "{uid: 1, friendId: 1}",

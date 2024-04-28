@@ -8,6 +8,7 @@ import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
 import me.a632079.ctalk.vo.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/page")
-    public PageVo<UserVo> page(@RequestBody UserPageForm form) {
+    public PageVo<UserVo> page(@RequestBody @Validated UserPageForm form) {
         return userService.pageUser(form);
     }
 

@@ -112,6 +112,7 @@ public class MessageServiceImpl implements MessageService {
         PageRequest pageRequest = PageRequest.of(form.getPageNum() - 1, form.getPageSize(), sort);
 
         Message message = mapperFacade.map(form, Message.class);
+        message.setChatType(ChatType.Private);
 
         Long count = template.count(query, Message.class, message.getDocumentName());
 

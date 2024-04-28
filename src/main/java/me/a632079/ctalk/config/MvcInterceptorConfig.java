@@ -1,14 +1,26 @@
 package me.a632079.ctalk.config;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import me.a632079.ctalk.interceptor.CorsInterceptor;
 import me.a632079.ctalk.interceptor.UserInfoInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 
 /**
  * @className: MvcInterceptorConfig
@@ -38,5 +50,34 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(userInfoInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/register", "/ping");
+    }
+
+    /**
+     * 自定义格式化
+     *
+     * @param converters
+     */
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        simpleModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(LocalDateTime.class, new StdSerializer<>(LocalDateTime.class) {
+            @Override
+            public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                jsonGenerator.writeNumber(localDateTime.toInstant(ZoneOffset.ofHours(8))
+                                                       .toEpochMilli());
+            }
+        });
+        objectMapper.registerModule(simpleModule);
+
+        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
+        converters.add(jackson2HttpMessageConverter);
+
     }
 }
