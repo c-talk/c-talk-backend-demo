@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Document("GroupMember")
+@Document("groupMember")
 public class GroupMember extends BasePo {
     private Long   gid;
     private Long   uid;

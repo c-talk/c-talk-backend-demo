@@ -18,6 +18,14 @@ spring:
     username: user
     password: password
     virtual-host: /
+  redis:
+    host: 192.168.63.187
+    port: 6379
+    connect-timeout: 10s
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 50
 
 server:
   port: 1002
