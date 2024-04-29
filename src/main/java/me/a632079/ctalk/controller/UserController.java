@@ -1,6 +1,7 @@
 package me.a632079.ctalk.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.po.User;
 import me.a632079.ctalk.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -49,15 +51,25 @@ public class UserController {
     }
 
     @PostMapping("/set")
-    public void set(UserSetForm form) {
-        User user = mapperFacade.map(form, User.class);
-        user.setId(StpUtil.getLoginIdAsLong());
+    public void set(@RequestBody UserSetForm form) {
+        User user = userRepository.findFirstById(StpUtil.getLoginIdAsLong());
+        if (Objects.isNull(user)) {
+            return;
+        }
+
+        if (StrUtil.isNotBlank(form.getAvatar())) {
+            user.setAvatar(form.getAvatar());
+        }
+
+        if (StrUtil.isNotBlank(form.getNickName())) {
+            user.setNickName(form.getNickName());
+        }
 
         userRepository.save(user);
     }
 
     @PostMapping("/changePassword")
-    public void changePassword(ChangePasswordForm form) {
+    public void changePassword(@RequestBody ChangePasswordForm form) {
         Optional<User> user = userRepository.findById(StpUtil.getLoginIdAsLong());
         if (user.isEmpty()) {
             return;
