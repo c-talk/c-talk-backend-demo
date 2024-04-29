@@ -1,5 +1,6 @@
 package me.a632079.ctalk.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
@@ -14,6 +15,7 @@ public enum ChatType {
         this.value = type;
     }
 
+    @JsonCreator
     public static ChatType valueOf(int value) {
         for (ChatType type : values()) {
             if (type.value == value) {
