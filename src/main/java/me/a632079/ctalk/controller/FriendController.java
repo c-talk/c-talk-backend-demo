@@ -92,10 +92,19 @@ public class FriendController {
             throw CTalkExceptionFactory.bizException(CTalkErrorCode.TODO);
         }
 
+        // TODO 需要判断好友是否存在
+
         Friend friend = Friend.builder()
                               .friendId(id)
                               .uid(UserInfoUtil.getId())
                               .build();
+
+        repository.insert(friend);
+
+        friend = Friend.builder()
+                       .friendId(UserInfoUtil.getId())
+                       .uid(id)
+                       .build();
 
         repository.insert(friend);
     }

@@ -5,6 +5,7 @@ import me.a632079.ctalk.vo.PageVo;
 import me.a632079.ctalk.vo.ResultData;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -32,7 +33,8 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Resource
-                || body instanceof ResultData<?>) {
+                || body instanceof ResultData<?>
+                || body instanceof ResponseEntity) {
             return body;
         }
 

@@ -1,5 +1,6 @@
 package me.a632079.ctalk.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import me.a632079.ctalk.po.Message;
 import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.vo.MessageForm;
@@ -24,7 +25,7 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping("/send/private")
-    public Message sendPrivateMessage(@RequestBody MessageForm form) {
+    public Message sendPrivateMessage(@RequestBody MessageForm form) throws JsonProcessingException {
         return messageService.addPrivateMessage(form);
     }
 

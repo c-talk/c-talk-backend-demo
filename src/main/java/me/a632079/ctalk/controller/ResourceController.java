@@ -1,5 +1,7 @@
 package me.a632079.ctalk.controller;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.stream.StreamUtil;
 import io.github.thibaultmeyer.cuid.CUID;
 import me.a632079.ctalk.constant.CTalkConstant;
 import me.a632079.ctalk.dto.ResourceDto;
@@ -13,17 +15,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequestMapping("/resources")
 public class ResourceController {
     @Resource
@@ -31,22 +35,22 @@ public class ResourceController {
 
     @SkipPackage
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getResource(@PathVariable String id) throws IOException {
+    public void getResource(@PathVariable String id, HttpServletResponse response) throws IOException {
         var resource = resourceService.getResource(id);
         if (resource == null) {
-            return ResponseEntity.notFound()
-                                 .build();
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            return;
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(resource.getMime()));
-        return new ResponseEntity<>(
-                resource.getBytes(),
-                headers,
-                HttpStatus.OK
-        );
+        response.setContentType(MediaType.valueOf(resource.getMime())
+                                         .getType());
+        response.getOutputStream()
+                .write(resource.getBytes());
+        response.flushBuffer();
     }
 
     @SkipPackage
+    @ResponseBody
     @DeleteMapping("/{id}")
     // TODO: 添加 CAS 鉴权？仅限管理员删除？
     public ResponseEntity<Void> deleteResource(@PathVariable String id) {
@@ -57,6 +61,7 @@ public class ResourceController {
         return ResponseEntity.noContent().build();
     }
 
+    @ResponseBody
     @PostMapping("/")
     public List<ResourcePo> createResource(@RequestParam("files") MultipartFile[] files) {
         if (files == null || files.length == 0) {

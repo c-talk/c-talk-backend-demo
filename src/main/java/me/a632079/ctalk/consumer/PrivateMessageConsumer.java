@@ -4,6 +4,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.po.UserInfo;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.io.IOException;
  * @author: haoduor
  */
 
-
+@Slf4j
 public class PrivateMessageConsumer extends DefaultConsumer {
 
     private UserInfo userInfo;
@@ -28,7 +29,7 @@ public class PrivateMessageConsumer extends DefaultConsumer {
     public void handleDelivery(String consumerTag, Envelope envelope,
                                AMQP.BasicProperties properties, byte[] body) {
         String content = new String(body);
-
+        log.info("用户{} 收到消息 {}", userInfo.getId(), content);
         userInfo.getClient()
                 .sendEvent("private", content);
     }

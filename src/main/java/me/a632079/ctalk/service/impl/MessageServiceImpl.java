@@ -1,9 +1,10 @@
 package me.a632079.ctalk.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.enums.ChatType;
 import me.a632079.ctalk.po.Message;
-import me.a632079.ctalk.po.User;
 import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.vo.MessageForm;
@@ -37,8 +38,11 @@ public class MessageServiceImpl implements MessageService {
     @Resource
     private MapperFacade mapperFacade;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Override
-    public Message addPrivateMessage(MessageForm form) {
+    public Message addPrivateMessage(MessageForm form) throws JsonProcessingException {
         Message message = mapperFacade.map(form, Message.class);
         message.setChatType(ChatType.Private);
         message.genIdent();
@@ -51,9 +55,9 @@ public class MessageServiceImpl implements MessageService {
 
         if (Objects.nonNull(info)) {
             info.getClient()
-                .sendEvent("private", message);
+                .sendEvent("private", objectMapper.writeValueAsString(message));
         } else {
-            amqpTemplate.convertAndSend("user." + uid, message);
+            amqpTemplate.convertAndSend("user." + uid, objectMapper.writeValueAsString(message));
         }
 
         return message;

@@ -1,11 +1,13 @@
 package me.a632079.ctalk.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.constant.CTalkConstant;
 import me.a632079.ctalk.enums.SystemErrorCode;
 import me.a632079.ctalk.vo.ResultData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,13 +48,17 @@ public class GlobalExceptionAdvice {
         return ResultData.error(errorInfo.getCode(), errorInfo.getMsg());
     }
 
+    @ExceptionHandler(NotLoginException.class)
+    public ResponseEntity<?> handlerNotLoginException(NotLoginException nle) {
+        log.error("[未登录异常访问]: [{}]", nle.getLoginType(), nle);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
     /**
      * 字段验证异常处理
      *
-     * @param request
-     *            request
-     * @param e
-     *            异常信息
+     * @param request request
+     * @param e       异常信息
      * @return ResultData
      */
     @ResponseBody

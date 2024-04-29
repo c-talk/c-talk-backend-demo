@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import me.a632079.ctalk.interceptor.CorsInterceptor;
 import me.a632079.ctalk.interceptor.UserInfoInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,7 +79,11 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
         objectMapper.registerModule(simpleModule);
 
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        converters.add(jackson2HttpMessageConverter);
+        ArrayList<MediaType> mediaTypes = new ArrayList<>();
+        mediaTypes.add(MediaType.APPLICATION_JSON);
 
+        jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
+        converters.add(jackson2HttpMessageConverter);
+        super.configureMessageConverters(converters);
     }
 }

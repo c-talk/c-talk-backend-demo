@@ -12,5 +12,5 @@ public interface CTalkConstant {
     String GLOBAL_ERROR_MSG = "请求错误，请稍后重试";
 
     // token 过期时间 单位s
-    int TOKEN_EXPIRE_TIME = 5 * 60 + 30;
+    int TOKEN_EXPIRE_TIME = 30 * 60 + 30;
 }

@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TokenRepository extends MongoRepository<Token, Long> {
+    Token findFirstByUid(Long uid);
 }
