@@ -18,4 +18,5 @@ import java.util.List;
 public class GroupVo {
     private Group             group;
     private List<GroupMember> memberList;
+    private boolean           isJoin;
 }

@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.po.User;
+import me.a632079.ctalk.repository.FriendRepository;
 import me.a632079.ctalk.repository.UserRepository;
 import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.Argon2Util;
@@ -33,6 +34,9 @@ public class UserController {
 
     @Resource
     private UserRepository userRepository;
+
+    @Resource
+    private FriendRepository friendRepository;
 
     @Resource
     private MapperFacade mapperFacade;
@@ -94,8 +98,21 @@ public class UserController {
     }
 
     @GetMapping("/get/{id}")
-    public User get(@PathVariable Long id) {
-        return userRepository.findById(id)
-                             .orElse(null);
+    public UserVo get(@PathVariable Long id) {
+        User user = userRepository.findFirstById(id);
+        if (Objects.isNull(user)) {
+            return null;
+        }
+        UserVo vo = mapperFacade.map(user, UserVo.class);
+
+        Long uid = StpUtil.getLoginIdAsLong();
+        if (uid == id) {
+            vo.setFriend(true);
+            return vo;
+        }
+
+        vo.setFriend(friendRepository.existsByUidAndFriendId(uid, id));
+
+        return vo;
     }
 }

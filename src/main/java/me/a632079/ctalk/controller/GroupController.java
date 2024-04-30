@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.po.Group;
 import me.a632079.ctalk.po.GroupMember;
+import me.a632079.ctalk.repository.GroupMemberRepository;
 import me.a632079.ctalk.repository.GroupRepository;
 import me.a632079.ctalk.service.GroupMemberService;
 import me.a632079.ctalk.service.GroupService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @className: GroupController
@@ -31,6 +33,9 @@ public class GroupController {
 
     @Resource
     private GroupRepository groupRepository;
+
+    @Resource
+    private GroupMemberRepository groupMemberRepository;
 
     @Resource
     private GroupMemberService groupMemberService;
@@ -68,6 +73,42 @@ public class GroupController {
     @PostMapping("/page")
     public PageVo<Group> pageGroup(@RequestBody GroupPageForm form) {
         return groupService.pageGroup(form);
+    }
+
+    @PostMapping("/page/joined")
+    public PageVo<Group> pageJoinedGroup(@RequestBody JoinedGroupForm form) {
+        PageVo<GroupMember> pageVo = groupMemberService.pageGroupMemberByUid(form, form.getUid());
+        List<Group> groupList = groupService.listGroupByGid(pageVo.getItems()
+                                                                  .stream()
+                                                                  .map(GroupMember::getGid)
+                                                                  .distinct()
+                                                                  .collect(Collectors.toList()));
+
+        return PageVo.of(groupList, form, pageVo.getTotal());
+    }
+
+    @GetMapping("/get/{id}")
+    public GroupVo getGroupById(@PathVariable Long id) {
+        GroupVo vo = new GroupVo();
+        Group group = groupRepository.findFirstById(id);
+
+        if (Objects.isNull(group)) {
+            return null;
+        }
+
+        Long uid = StpUtil.getLoginIdAsLong();
+
+        List<GroupMember> members = groupMemberService.listMember(group.getId(), 5);
+        vo.setGroup(group);
+        vo.setMemberList(members);
+        if (group.getOwner()
+                 .equals(uid)) {
+            vo.setJoin(true);
+        } else {
+            vo.setJoin(groupMemberRepository.existsByUidAndGid(uid, group.getId()));
+        }
+
+        return vo;
     }
 
     @PostMapping("/set")

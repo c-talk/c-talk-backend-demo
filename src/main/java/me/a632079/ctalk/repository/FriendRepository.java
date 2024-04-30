@@ -15,4 +15,6 @@ import java.util.List;
 @Repository
 public interface FriendRepository extends MongoRepository<Friend, Long> {
     List<Friend> findAllByUid(Long uid);
+
+    boolean existsByUidAndFriendId(Long uid, Long friendId);
 }

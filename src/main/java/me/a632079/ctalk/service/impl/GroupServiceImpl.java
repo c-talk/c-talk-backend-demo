@@ -12,6 +12,7 @@ import me.a632079.ctalk.repository.GroupRepository;
 import me.a632079.ctalk.service.GroupMemberService;
 import me.a632079.ctalk.service.GroupService;
 import me.a632079.ctalk.vo.*;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -101,6 +102,12 @@ public class GroupServiceImpl implements GroupService {
         List<Group> result = template.find(query.with(pageRequest), Group.class);
 
         return PageVo.of(result, form, count);
+    }
+
+    @Override
+    public List<Group> listGroupByGid(List<Long> gids) {
+        return Lists.newArrayList(groupRepository.findAllById(gids)
+                                                 .iterator());
     }
 
     @SneakyThrows

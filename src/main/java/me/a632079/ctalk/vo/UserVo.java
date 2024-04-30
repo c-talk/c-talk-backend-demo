@@ -24,4 +24,6 @@ public class UserVo {
     private boolean verify;
 
     private String token;
+
+    private boolean isFriend;
 }

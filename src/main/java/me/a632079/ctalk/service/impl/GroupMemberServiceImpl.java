@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @className: GroupMemberServiceImpl
@@ -62,7 +63,18 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public PageVo<GroupMember> pageGroupMember(PageForm form) {
+        return this.pageGroupMemberByUid(form, null);
+    }
+
+    @Override
+    public PageVo<GroupMember> pageGroupMemberByUid(PageForm form, Long uid) {
         Query query = new Query();
+
+        if (Objects.nonNull(uid)) {
+            query.addCriteria(Criteria.where("uid")
+                                      .is(uid));
+        }
+
         Sort sort = Sort.by(Sort.Direction.DESC, "createTime");
         PageRequest pageRequest = PageRequest.of(form.getPageNum() - 1, form.getPageSize(), sort);
 
