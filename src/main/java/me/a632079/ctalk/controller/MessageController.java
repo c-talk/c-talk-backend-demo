@@ -30,7 +30,7 @@ public class MessageController {
     }
 
     @PostMapping("/send/group")
-    public Message sendGroupMessage(@RequestBody MessageForm form) {
+    public Message sendGroupMessage(@RequestBody MessageForm form) throws JsonProcessingException {
         return messageService.addGroupMessage(form);
     }
 

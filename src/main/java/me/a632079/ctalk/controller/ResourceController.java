@@ -34,14 +34,14 @@ public class ResourceController {
     private ResourceService resourceService;
 
     @SkipPackage
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public void getResource(@PathVariable String id, HttpServletResponse response) throws IOException {
         var resource = resourceService.getResource(id);
         if (resource == null) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             return;
         }
-        HttpHeaders headers = new HttpHeaders();
+
         response.setContentType(MediaType.valueOf(resource.getMime())
                                          .getType());
         response.getOutputStream()
@@ -69,6 +69,12 @@ public class ResourceController {
         }
         return Arrays.stream(files)
                      .map(v -> {
+                                 /**
+                                  * TODO 需要记录图片的宽高
+                                  * 需要进行转码编译
+                                  * 缩略图 压缩版本 原图
+                                  */
+
                                  ResourceDto dto = new ResourceDto();
                                  dto.setName(v.getOriginalFilename());
                                  dto.setId(CUID.randomCUID2()

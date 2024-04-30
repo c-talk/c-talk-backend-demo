@@ -9,13 +9,15 @@ spring:
     name: talk-center
   data:
     mongodb:
-      database: c-talk
-      host: 192.168.63.187
-      port: 27017
-      username: root
-      password: admin123456!!!
+      #      database: c-talk
+      #      host: 192.168.63.187
+      #      port: 27017
+      #      username: root
+      #      password: admin123456!!!
       # 根据注解自动创建索引
       auto-index-creation: true
+      uri: mongodb://root:admin123456!!!@192.168.63.187:27017/c-talk?minPoolSize=5&maxPoolSize=30
+
   rabbitmq:
     host: 192.168.63.187
     port: 5672
@@ -74,3 +76,7 @@ sa-token:
   is-log: false
   is-read-cookie: false
   is-read-header: true
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG

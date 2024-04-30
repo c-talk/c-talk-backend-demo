@@ -47,6 +47,8 @@ public class MessageServiceImpl implements MessageService {
         message.setChatType(ChatType.Private);
         message.genIdent();
 
+        // TODO 双方互为好友检查
+
         template.insert(message, message.getDocumentName());
 
         Long uid = message.getReceiver();
@@ -64,12 +66,22 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message addGroupMessage(MessageForm form) {
-        return mapperFacade.map(form, Message.class);
+    public Message addGroupMessage(MessageForm form) throws JsonProcessingException {
+        Message message = mapperFacade.map(form, Message.class);
+        message.setChatType(ChatType.Group);
+
+        // TODO 在群组中检查
+
+        template.insert(message, message.getDocumentName());
+
+        amqpTemplate.convertAndSend("message.group." + message.getReceiver(), objectMapper.writeValueAsString(message));
+
+        return message;
     }
 
     @Override
     public List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver) {
+        // TODO 聚合存在问题
         List<AggregationOperation> operations = new ArrayList<>();
         Message message = new Message();
         for (Long s : sender) {

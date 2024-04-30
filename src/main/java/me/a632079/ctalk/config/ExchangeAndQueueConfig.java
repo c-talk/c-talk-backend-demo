@@ -74,18 +74,18 @@ public class ExchangeAndQueueConfig {
     }
 
     public void createPrivateMessageBind(Long uid) {
-        this.createDirectBindQueue("message.private", "user." + uid, "user." + uid);
+        this.createDirectBindQueue("message.private", "user.private." + uid, "user.private." + uid);
     }
 
     public void removePrivateMessageBind(Long uid) {
-        this.removeDirectBindQueue("message.private", "user." + uid, "user." + uid);
+        this.removeDirectBindQueue("message.private", "user.private." + uid, "user.private." + uid);
     }
 
     public void createGroupMessageBind(Long gid, Long uid) {
-        this.createFanoutBindQueue("message.group." + gid, "user." + uid);
+        this.createFanoutBindQueue("message.group." + gid, "user.group." + uid);
     }
 
     public void removeGroupMessageBind(Long gid, Long uid) {
-        this.removeFanoutBindQueue("message.group." + gid, "user." + uid);
+        this.removeFanoutBindQueue("message.group." + gid, "user.group." + uid);
     }
 }

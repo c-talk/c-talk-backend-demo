@@ -1,8 +1,11 @@
 package me.a632079.ctalk.po;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @className: GroupMember
@@ -12,11 +15,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Document("groupMember")
 public class GroupMember extends BasePo {
-    private Long   gid;
-    private Long   uid;
+    @Indexed
+    private Long gid;
+
+    @Indexed
+    private Long uid;
+
     private String alias;
-    private String role;
+
+    private List<String> role;
 }

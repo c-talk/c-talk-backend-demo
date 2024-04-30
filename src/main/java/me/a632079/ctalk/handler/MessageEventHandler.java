@@ -6,9 +6,12 @@ import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.config.ExchangeAndQueueConfig;
+import me.a632079.ctalk.consumer.GroupMessageConsumer;
 import me.a632079.ctalk.consumer.PrivateMessageConsumer;
+import me.a632079.ctalk.po.GroupMember;
 import me.a632079.ctalk.po.Token;
 import me.a632079.ctalk.po.UserInfo;
+import me.a632079.ctalk.repository.GroupMemberRepository;
 import me.a632079.ctalk.service.TokenService;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +48,9 @@ public class MessageEventHandler {
     @Resource
     private ConnectionFactory connectionFactory;
 
+    @Resource
+    private GroupMemberRepository groupMemberRepository;
+
     /**
      * 成功创建连接时调用
      *
@@ -70,16 +77,24 @@ public class MessageEventHandler {
         info.setClient(client);
 
         client.set("id", uid);
-        // 创建消息队列
+        // 创建消息队列 接受私聊消息
         exchangeAndQueueConfig.createPrivateMessageBind(uid);
 
         Connection connection = connectionFactory.createConnection();
         Channel channel = connection.createChannel(true);
 
-        channel.basicConsume("user." + uid, new PrivateMessageConsumer(channel, info));
+        channel.basicConsume("user.private." + uid, new PrivateMessageConsumer(channel, info));
 
         info.setChannel(channel);
         info.setConnection(connection);
+
+        // 绑定群组消息队列
+        List<GroupMember> members = groupMemberRepository.findAllByUid(uid);
+        for (GroupMember member : members) {
+            exchangeAndQueueConfig.createGroupMessageBind(member.getGid(), member.getUid());
+        }
+
+        channel.basicConsume("user.group." + uid, new GroupMessageConsumer(channel, info));
 
         userInfoMap.put(uid, info);
     }

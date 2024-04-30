@@ -40,6 +40,9 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
     @Resource
     private CorsInterceptor corsInterceptor;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
@@ -51,7 +54,7 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
         // 用户信息工具类
         registry.addInterceptor(userInfoInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/register", "/ping");
+                .excludePathPatterns("/login", "/register", "/ping", "/resources/get/*");
     }
 
     /**
@@ -62,21 +65,6 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
     @Override
     protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
-        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-        simpleModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-        simpleModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
-        simpleModule.addSerializer(LocalDateTime.class, new StdSerializer<>(LocalDateTime.class) {
-            @Override
-            public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-                jsonGenerator.writeNumber(localDateTime.toInstant(ZoneOffset.ofHours(8))
-                                                       .toEpochMilli());
-            }
-        });
-        objectMapper.registerModule(simpleModule);
 
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
         ArrayList<MediaType> mediaTypes = new ArrayList<>();

@@ -13,4 +13,10 @@ public interface CTalkConstant {
 
     // token 过期时间 单位s
     int TOKEN_EXPIRE_TIME = 30 * 60 + 30;
+
+    interface GroupRole {
+        String OWNER  = "owner";
+        String ADMIN  = "admin";
+        String MEMBER = "member";
+    }
 }

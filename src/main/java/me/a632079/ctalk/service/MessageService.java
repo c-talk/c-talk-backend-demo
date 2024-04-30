@@ -12,7 +12,7 @@ import java.util.List;
 public interface MessageService {
     Message addPrivateMessage(MessageForm form) throws JsonProcessingException;
 
-    Message addGroupMessage(MessageForm form);
+    Message addGroupMessage(MessageForm form) throws JsonProcessingException;
 
     List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver);
 

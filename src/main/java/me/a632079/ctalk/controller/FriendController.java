@@ -70,7 +70,7 @@ public class FriendController {
 
         List<Message> messages = messageService.getFirstPrivateMessageByFriend(CollUtil.map(friends, Friend::getFriendId, true), StpUtil.getLoginIdAsLong());
         Map<String, Message> messageMap = messages.stream()
-                                                  .collect(Collectors.toMap(Message::getIdentify, e -> e));
+                                                  .collect(Collectors.toMap(Message::getIdentify, e -> e, (a, b) -> a));
 
         return mapperFacade.mapAsList(friends, FriendVo.class)
                            .stream()
