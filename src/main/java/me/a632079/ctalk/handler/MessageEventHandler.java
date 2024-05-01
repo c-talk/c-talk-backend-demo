@@ -81,11 +81,12 @@ public class MessageEventHandler {
         exchangeAndQueueConfig.createPrivateMessageBind(uid);
 
         Connection connection = connectionFactory.createConnection();
-        Channel channel = connection.createChannel(true);
+        Channel privateChannel = connection.createChannel(true);
+        Channel groupChannel = connection.createChannel(true);
 
-        channel.basicConsume("user.private." + uid, new PrivateMessageConsumer(channel, info));
+        privateChannel.basicConsume("user.private." + uid, new PrivateMessageConsumer(privateChannel, info));
 
-        info.setChannel(channel);
+        info.setPrivateChannel(privateChannel);
         info.setConnection(connection);
 
         // 绑定群组消息队列
@@ -94,7 +95,8 @@ public class MessageEventHandler {
             exchangeAndQueueConfig.createGroupMessageBind(member.getGid(), member.getUid());
         }
 
-        channel.basicConsume("user.group." + uid, new GroupMessageConsumer(channel, info));
+        groupChannel.basicConsume("user.group." + uid, new GroupMessageConsumer(groupChannel, info));
+        info.setGroupChannel(groupChannel);
 
         userInfoMap.put(uid, info);
     }

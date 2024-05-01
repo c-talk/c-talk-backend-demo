@@ -21,12 +21,14 @@ public class UserInfo {
 
     private SocketIOClient client;
 
-    private Channel channel;
+    private Channel privateChannel;
+    private Channel groupChannel;
 
     private Connection connection;
 
     public void close() throws IOException, TimeoutException {
-        channel.close();
+        privateChannel.close();
+        groupChannel.close();
         connection.close();
     }
 }

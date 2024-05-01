@@ -73,7 +73,7 @@ public class MessageServiceImpl implements MessageService {
         // TODO 在群组中检查
         template.insert(message, message.getDocumentName());
 
-        amqpTemplate.convertAndSend("message.group." + message.getReceiver(), objectMapper.writeValueAsString(message));
+        amqpTemplate.convertAndSend("message.group." + message.getReceiver(), "", objectMapper.writeValueAsString(message));
 
         return message;
     }
