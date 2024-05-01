@@ -138,6 +138,17 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public PageVo<Message> pageGroupMessage(MessageHistoryForm form) {
-        return null;
+        Query query = new Query();
+        Sort sort = Sort.by(Sort.Direction.DESC, "createTime");
+        PageRequest pageRequest = PageRequest.of(form.getPageNum() - 1, form.getPageSize(), sort);
+
+        Message message = mapperFacade.map(form, Message.class);
+        message.setChatType(ChatType.Group);
+
+        Long count = template.count(query, Message.class, message.getDocumentName());
+
+        List<Message> result = template.find(query.with(pageRequest), Message.class, message.getDocumentName());
+
+        return PageVo.of(result, form, count);
     }
 }

@@ -103,9 +103,9 @@ public class GroupController {
         vo.setMemberList(members);
         if (group.getOwner()
                  .equals(uid)) {
-            vo.setJoin(true);
+            vo.setMember(true);
         } else {
-            vo.setJoin(groupMemberRepository.existsByUidAndGid(uid, group.getId()));
+            vo.setMember(groupMemberRepository.existsByUidAndGid(uid, group.getId()));
         }
 
         return vo;
