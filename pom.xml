@@ -11,7 +11,7 @@
 
 	<groupId>me.a632079</groupId>
 	<artifactId>c-talk</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>c-talk</name>
 	<description>c-talk IM</description>
 
