@@ -1,0 +1,6 @@
+name: CI Maven push on docker
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
