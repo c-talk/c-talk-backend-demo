@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  c-talk:
+    build:
+      context: ..
+      dockerfile: ./docker/service/app/Dockerfile
+    image: registry.cn-hangzhou.aliyuncs.com/a632079/c-talk-app:latest
