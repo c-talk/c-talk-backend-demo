@@ -37,6 +37,7 @@ public class MongoConfig {
     // 转换器
     private class BeforeConverter implements BeforeConvertCallback<Object> {
 
+        // mongodb 写入数据前注入 公共字段
         @Override
         public Object onBeforeConvert(Object entity, String collection) {
             if (entity instanceof BasePo) {

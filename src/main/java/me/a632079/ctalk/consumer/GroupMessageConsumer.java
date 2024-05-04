@@ -28,6 +28,7 @@ public class GroupMessageConsumer extends DefaultConsumer {
     public void handleDelivery(String consumerTag, Envelope envelope,
                                AMQP.BasicProperties properties, byte[] body) {
         String content = new String(body);
+
         log.info("用户{} 收到 群组消息 {}", userInfo.getId(), content);
 
         userInfo.getClient()

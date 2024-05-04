@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Snowflake;
 
 import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.exception.CTalkExceptionFactory;
+import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.service.UserService;
 
 import org.springframework.cglib.transform.ClassTransformerFactory;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @className: TestController
@@ -31,6 +34,9 @@ public class TestController {
     @Resource
     private Snowflake snowflake;
 
+    @Resource
+    private ConcurrentHashMap<Long, UserInfo> userInfoMap;
+
     @GetMapping("/foo")
     public String pp() {
         return "foo";
@@ -38,11 +44,16 @@ public class TestController {
 
     @GetMapping("/list")
     public List<Integer> list() {
-        return List.of(1,2,3);
+        return List.of(1, 2, 3);
     }
 
     @GetMapping("/error")
     public void error() {
         throw CTalkExceptionFactory.bizException(CTalkErrorCode.TEST_ERROR);
+    }
+
+    @GetMapping("/online")
+    public Map<Long, UserInfo> getOnline() {
+        return userInfoMap;
     }
 }
