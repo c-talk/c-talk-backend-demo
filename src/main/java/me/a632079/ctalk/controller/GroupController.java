@@ -1,6 +1,8 @@
 package me.a632079.ctalk.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import me.a632079.ctalk.po.Group;
 import me.a632079.ctalk.po.GroupMember;
@@ -9,6 +11,9 @@ import me.a632079.ctalk.repository.GroupRepository;
 import me.a632079.ctalk.service.GroupMemberService;
 import me.a632079.ctalk.service.GroupService;
 import me.a632079.ctalk.vo.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +32,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/group")
 public class GroupController {
+
+    @Resource
+    private MongoTemplate template;
 
     @Resource
     private GroupService groupService;
@@ -76,15 +84,60 @@ public class GroupController {
     }
 
     @PostMapping("/page/joined")
-    public PageVo<Group> pageJoinedGroup(@RequestBody JoinedGroupForm form) {
-        PageVo<GroupMember> pageVo = groupMemberService.pageGroupMemberByUid(form, form.getUid());
-        List<Group> groupList = groupService.listGroupByGid(pageVo.getItems()
-                                                                  .stream()
-                                                                  .map(GroupMember::getGid)
-                                                                  .distinct()
-                                                                  .collect(Collectors.toList()));
+    public PageVo<JoinedGroupVo> pageJoinedGroup(@RequestBody JoinedGroupForm form) {
+        MatchOperation matchId = Aggregation.match(Criteria.where("uid")
+                                                           .is(form.getUid()));
 
-        return PageVo.of(groupList, form, pageVo.getTotal());
+        // 创建 $lookup
+        LookupOperation lookupOperation = LookupOperation.newLookup()
+                                                         .from("group")
+                                                         .localField("gid")
+                                                         .foreignField("_id")
+                                                         .as("group");
+
+        UnwindOperation unwindOperation = Aggregation.unwind("group", true);
+
+        Criteria criteria = new Criteria();
+
+        if (StrUtil.isNotBlank(form.getGroupName())) {
+            criteria.orOperator(
+                    Criteria.where("group.name")
+                            .regex(form.getGroupName())
+            );
+        }
+
+        MatchOperation matchOperation = Aggregation.match(criteria);
+
+        Aggregation countAggregation = Aggregation.newAggregation(
+                matchId,
+                lookupOperation,
+                unwindOperation,
+                matchOperation,
+                Aggregation.count()
+                           .as("total"));
+        AggregationResults<Count> countResults = template.aggregate(countAggregation, "groupMember", Count.class);
+        long total = countResults.getUniqueMappedResult() != null ? countResults.getUniqueMappedResult()
+                                                                                .getTotal() : 0;
+
+        // 分页
+        Long skip = (long) (form.getPageNum() - 1) * form.getPageSize();
+        SkipOperation skipOperation = Aggregation.skip(skip);
+        LimitOperation limitOperation = Aggregation.limit(form.getPageSize());
+
+        // 聚合查询
+        Aggregation aggregation = Aggregation.newAggregation(
+                matchId,
+                lookupOperation,
+                unwindOperation,
+                matchOperation,
+                skipOperation,
+                limitOperation
+        );
+
+        // 执行聚合查询
+        AggregationResults<JoinedGroupVo> results = template.aggregate(aggregation, "groupMember", JoinedGroupVo.class);
+
+        return PageVo.of(results.getMappedResults(), form, total);
     }
 
     @GetMapping("/get/{id}")
@@ -119,5 +172,10 @@ public class GroupController {
     @PostMapping("/remove")
     public void removeGroup(@RequestBody IdForm form) {
         groupService.deleteGroup(form.getId());
+    }
+
+    @Data
+    class Count {
+        private long total;
     }
 }
