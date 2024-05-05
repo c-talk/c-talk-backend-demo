@@ -26,6 +26,11 @@ jobs:
           login-server: https://registry.cn-hangzhou.aliyuncs.com
           username: "${{ secrets.ACR_USERNAME }}"
           password: "${{ secrets.ACR_PASSWORD }}"
+      - name: release
+        uses: actions/upload-artifact@v4
+        with:
+          name: c-talk-backend
+          path: ./target/*.jar
       - name: Build Docker Image
         run: docker compose  -f ./docker/docker-compose.yml build
       - name: Publish Docker Image
