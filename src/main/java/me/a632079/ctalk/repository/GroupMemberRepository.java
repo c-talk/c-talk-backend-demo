@@ -14,5 +14,10 @@ import java.util.List;
 public interface GroupMemberRepository extends MongoRepository<GroupMember, Long> {
     List<GroupMember> findAllByUid(Long uid);
 
+    List<GroupMember> findAllByUidAndGid(Long uid, Long gid);
+
     boolean existsByUidAndGid(Long uid, Long gid);
+
+    boolean removeByUidAndGid(Long uid, Long gid);
+
 }
