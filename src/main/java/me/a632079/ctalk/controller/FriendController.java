@@ -6,6 +6,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.stream.StreamUtil;
+import cn.hutool.core.util.StrUtil;
 import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.enums.CTalkErrorCode;
 import me.a632079.ctalk.exception.CTalkExceptionFactory;
@@ -17,11 +18,15 @@ import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.MessageUtil;
 import me.a632079.ctalk.util.UserInfoUtil;
+import me.a632079.ctalk.vo.FriendSearchForm;
 import me.a632079.ctalk.vo.FriendVo;
 import org.simpleframework.xml.Path;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,6 +48,9 @@ import java.util.stream.Collectors;
 public class FriendController {
 
     @Resource
+    private MongoTemplate template;
+
+    @Resource
     private FriendRepository repository;
 
     @Resource
@@ -55,9 +63,49 @@ public class FriendController {
     private MapperFacade mapperFacade;
 
 
-    @GetMapping("/list/{id}")
-    public List<Friend> list(@PathVariable Long id) {
-        return repository.findAllByUid(id);
+    @PostMapping("/list/{id}")
+    public List<FriendVo> list(@RequestBody FriendSearchForm form, @PathVariable Long id) {
+        MatchOperation matchId = Aggregation.match(Criteria.where("uid")
+                                                           .is(id));
+
+        // 创建 $lookup
+        LookupOperation lookupOperation = LookupOperation.newLookup()
+                                                         .from("user")
+                                                         .localField("friendId")
+                                                         .foreignField("_id")
+                                                         .as("friend");
+
+        UnwindOperation unwindOperation = Aggregation.unwind("friend", true);
+
+        Criteria criteria = new Criteria();
+
+        if (StrUtil.isNotBlank(form.getEmail())) {
+            criteria.orOperator(
+                    Criteria.where("friend.email")
+                            .regex(form.getEmail())
+            );
+        }
+
+        if (StrUtil.isNotBlank(form.getNickName())) {
+            criteria.orOperator(
+                    Criteria.where("friend.nickName")
+                            .regex(form.getNickName())
+            );
+        }
+
+        MatchOperation matchOperation = Aggregation.match(criteria);
+
+        // 聚合查询
+        Aggregation aggregation = Aggregation.newAggregation(
+                matchId,
+                lookupOperation,
+                unwindOperation,
+                matchOperation
+        );
+
+        // 执行聚合查询
+        AggregationResults<FriendVo> results = template.aggregate(aggregation, "friend", FriendVo.class);
+        return results.getMappedResults();
     }
 
     @GetMapping("/list/{id}/with/message")

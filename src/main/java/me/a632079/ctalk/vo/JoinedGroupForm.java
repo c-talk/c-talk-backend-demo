@@ -13,5 +13,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class JoinedGroupForm extends PageForm {
-    private Long uid;
+    private Long   uid;
+    private String groupName;
 }
