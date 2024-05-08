@@ -1,15 +1,20 @@
 package me.a632079.ctalk.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.Mapper;
+import ma.glasnost.orika.MapperFacade;
 import me.a632079.ctalk.po.Group;
 import me.a632079.ctalk.po.GroupMember;
+import me.a632079.ctalk.po.Message;
 import me.a632079.ctalk.repository.GroupMemberRepository;
 import me.a632079.ctalk.repository.GroupRepository;
 import me.a632079.ctalk.service.GroupMemberService;
 import me.a632079.ctalk.service.GroupService;
+import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.vo.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -47,6 +53,12 @@ public class GroupController {
 
     @Resource
     private GroupMemberService groupMemberService;
+
+    @Resource
+    private MessageService messageService;
+
+    @Resource
+    private MapperFacade mapperFacade;
 
     @PostMapping("/create")
     public Group createGroup(@RequestBody GroupForm groupForm) {
@@ -81,6 +93,24 @@ public class GroupController {
     @PostMapping("/page")
     public PageVo<Group> pageGroup(@RequestBody GroupPageForm form) {
         return groupService.pageGroup(form);
+    }
+
+    @PostMapping("/page/{id}/with/message")
+    public PageVo<JoinedGroupVo> pageWithMessage(@PathVariable Long id, @RequestBody PageForm pageForm) {
+        JoinedGroupForm form = mapperFacade.map(pageForm, JoinedGroupForm.class);
+        form.setUid(id);
+        PageVo<JoinedGroupVo> vo = this.pageJoinedGroup(form);
+        List<Message> messages = messageService.getFirstGroupMessageByGids(CollUtil.map(vo.getItems(), JoinedGroupVo::getGid, true));
+
+        Map<Long, Message> messageMap = messages.stream()
+                                                .collect(Collectors.toMap(Message::getReceiver, e -> e, (a, b) -> a));
+
+        vo.map(e -> {
+            e.setMessage(messageMap.getOrDefault(e.getGid(), null));
+            return e;
+        });
+
+        return vo;
     }
 
     @PostMapping("/page/joined")

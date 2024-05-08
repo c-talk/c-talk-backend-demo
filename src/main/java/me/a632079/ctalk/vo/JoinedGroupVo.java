@@ -2,6 +2,7 @@ package me.a632079.ctalk.vo;
 
 import lombok.Data;
 import me.a632079.ctalk.po.Group;
+import me.a632079.ctalk.po.Message;
 
 import java.time.LocalDateTime;
 
@@ -18,5 +19,6 @@ public class JoinedGroupVo {
     private Long          uid;
     private Long          gid;
     private Group         group;
+    private Message       message;
     private LocalDateTime createTime;
 }

@@ -1,9 +1,7 @@
 package me.a632079.ctalk.service.impl;
 
 import me.a632079.ctalk.constant.CTalkConstant;
-import me.a632079.ctalk.enums.ChatType;
 import me.a632079.ctalk.po.GroupMember;
-import me.a632079.ctalk.po.Message;
 import me.a632079.ctalk.repository.GroupMemberRepository;
 import me.a632079.ctalk.service.GroupMemberService;
 import me.a632079.ctalk.vo.PageForm;
@@ -63,16 +61,16 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
     @Override
     public PageVo<GroupMember> pageGroupMember(PageForm form) {
-        return this.pageGroupMemberByUid(form, null);
+        return this.pageGroupMemberByGid(form, null);
     }
 
     @Override
-    public PageVo<GroupMember> pageGroupMemberByUid(PageForm form, Long uid) {
+    public PageVo<GroupMember> pageGroupMemberByGid(PageForm form, Long gid) {
         Query query = new Query();
 
-        if (Objects.nonNull(uid)) {
-            query.addCriteria(Criteria.where("uid")
-                                      .is(uid));
+        if (Objects.nonNull(gid)) {
+            query.addCriteria(Criteria.where("gid")
+                                      .is(gid));
         }
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createTime");

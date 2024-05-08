@@ -57,7 +57,7 @@ public class GroupMemberController {
 
     @PostMapping("/page/{gid}")
     public PageVo<GroupMemberVo> list(@PathVariable Long gid, @RequestBody PageForm form) {
-        PageVo<GroupMember> groupMember = groupMemberService.pageGroupMember(form);
+        PageVo<GroupMember> groupMember = groupMemberService.pageGroupMemberByGid(form, gid);
         Map<Long, User> userMap = userService.listUserByIds(groupMember.getItems()
                                                                        .stream()
                                                                        .map(GroupMember::getUid)

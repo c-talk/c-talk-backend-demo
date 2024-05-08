@@ -14,12 +14,16 @@ import me.a632079.ctalk.po.Friend;
 import me.a632079.ctalk.po.Message;
 import me.a632079.ctalk.po.UserInfo;
 import me.a632079.ctalk.repository.FriendRepository;
+import me.a632079.ctalk.service.FriendService;
 import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.MessageUtil;
 import me.a632079.ctalk.util.UserInfoUtil;
 import me.a632079.ctalk.vo.FriendSearchForm;
 import me.a632079.ctalk.vo.FriendVo;
+import me.a632079.ctalk.vo.PageForm;
+import me.a632079.ctalk.vo.PageVo;
+import org.checkerframework.checker.optional.qual.EnsuresPresentIf;
 import org.simpleframework.xml.Path;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -54,6 +58,9 @@ public class FriendController {
     private FriendRepository repository;
 
     @Resource
+    private FriendService friendService;
+
+    @Resource
     private UserService userService;
 
     @Resource
@@ -61,7 +68,6 @@ public class FriendController {
 
     @Resource
     private MapperFacade mapperFacade;
-
 
     @PostMapping("/list/{id}")
     public List<FriendVo> list(@RequestBody FriendSearchForm form, @PathVariable Long id) {
@@ -108,22 +114,20 @@ public class FriendController {
         return results.getMappedResults();
     }
 
-    @GetMapping("/list/{id}/with/message")
-    public List<FriendVo> listWithMessage(@PathVariable Long id) {
-        List<Friend> friends = repository.findAllByUid(id);
+    @PostMapping("/page/{uid}/with/message")
+    public PageVo<FriendVo> pageWithMessage(@PathVariable Long uid, @RequestBody PageForm pageForm) {
+        //TODO 权限检查
 
-        if (friends.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        List<Message> messages = messageService.getFirstPrivateMessageByFriend(CollUtil.map(friends, Friend::getFriendId, true), StpUtil.getLoginIdAsLong());
+        PageVo<Friend> friendPageVo = friendService.pageFriend(pageForm, uid);
+        List<Message> messages = messageService.getFirstPrivateMessageByFriend(CollUtil.map(friendPageVo.getItems(), Friend::getFriendId, true), uid);
         Map<String, Message> messageMap = messages.stream()
                                                   .collect(Collectors.toMap(Message::getIdentify, e -> e, (a, b) -> a));
 
-        return mapperFacade.mapAsList(friends, FriendVo.class)
-                           .stream()
-                           .peek(e -> e.setMessage(messageMap.getOrDefault(MessageUtil.hash(e), null)))
-                           .collect(Collectors.toList());
+        return friendPageVo.trans(e -> {
+            FriendVo vo = mapperFacade.map(e, FriendVo.class);
+            vo.setMessage(messageMap.getOrDefault(MessageUtil.hash(e), null));
+            return vo;
+        });
     }
 
     @GetMapping("/page/{id}")

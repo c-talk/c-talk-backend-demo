@@ -80,7 +80,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver) {
-        // TODO 聚合存在问题
         List<AggregationOperation> operations = new ArrayList<>();
         Message message = new Message();
         for (Long s : sender) {
@@ -92,8 +91,34 @@ public class MessageServiceImpl implements MessageService {
 
         operations.add(Aggregation.sort(Sort.Direction.DESC, "createTime"));
 
-        Aggregation.group("identify")
-                   .first("$$ROOT");
+        operations.add(Aggregation.group("identify")
+                                  .first("$$ROOT")
+                                  .as("message"));
+
+        operations.add(Aggregation.replaceRoot("message"));
+
+        AggregationResults<Message> results = template.aggregate(Aggregation.newAggregation(operations), message.getDocumentName(), Message.class);
+
+        return results.getMappedResults();
+    }
+
+    @Override
+    public List<Message> getFirstGroupMessageByGids(List<Long> gidList) {
+        List<AggregationOperation> operations = new ArrayList<>();
+        Message message = new Message();
+        for (Long s : gidList) {
+            message.setReceiver(s);
+            message.setChatType(ChatType.Group);
+            operations.add(UnionWithOperation.unionWith(message.getDocumentName()));
+        }
+
+        operations.add(Aggregation.sort(Sort.Direction.DESC, "createTime"));
+
+        operations.add(Aggregation.group("receiver")
+                                  .first("$$ROOT")
+                                  .as("message"));
+
+        operations.add(Aggregation.replaceRoot("message"));
 
         AggregationResults<Message> results = template.aggregate(Aggregation.newAggregation(operations), message.getDocumentName(), Message.class);
 

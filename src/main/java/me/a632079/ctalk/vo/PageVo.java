@@ -43,15 +43,24 @@ public class PageVo<T> {
     }
 
     public static <R> PageVo<R> of(List<R> data, PageVo pageVo) {
-        PageForm form = new PageForm();
-        form.setPageNum(pageVo.getPage());
-        form.setPageSize(pageVo.getPageSize());
-        return PageVo.of(data, form, pageVo.getTotal());
+        PageVo<R> res = new PageVo<>();
+        pageVo.setItems(data);
+        pageVo.setPage(pageVo.getPage());
+        pageVo.setPageSize(pageVo.getPageSize());
+        pageVo.setTotal(pageVo.getTotal());
+
+        return res;
     }
 
     public <R> PageVo<R> trans(Function<T, R> mapFunc) {
         return PageVo.of(items.stream()
                               .map(mapFunc)
                               .collect(Collectors.toList()), this);
+    }
+
+    public void map(Function<T, T> mapFunc) {
+        this.items = items.stream()
+                          .map(mapFunc)
+                          .collect(Collectors.toList());
     }
 }

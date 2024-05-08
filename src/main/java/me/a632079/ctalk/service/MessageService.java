@@ -16,6 +16,8 @@ public interface MessageService {
 
     List<Message> getFirstPrivateMessageByFriend(List<Long> sender, Long receiver);
 
+    List<Message> getFirstGroupMessageByGids(List<Long> gidList);
+
     List<Message> getPrivateMessage(Long senderId, Long receiverId);
 
     List<Message> getGroupMessage(Long id);

@@ -30,14 +30,14 @@ public class MongoConfig {
     @Resource
     private Snowflake snowflake;
 
-    @Value("${spring.data.mongodb.uri}")
-    private String uri;
-
-    @Bean
-    @Primary
-    public MongoDatabaseFactory mongoDatabaseFactory() {
-        return new SimpleMongoClientDatabaseFactory(uri);
-    }
+    // @Value("${spring.data.mongodb.uri}")
+    // private String uri;
+    //
+    // @Bean
+    // @Primary
+    // public MongoDatabaseFactory mongoDatabaseFactory() {
+    //     return new SimpleMongoClientDatabaseFactory(uri);
+    // }
 
     @Bean
     public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory, MappingMongoConverter converter) {

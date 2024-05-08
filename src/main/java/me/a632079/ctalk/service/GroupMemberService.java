@@ -26,7 +26,7 @@ public interface GroupMemberService {
 
     PageVo<GroupMember> pageGroupMember(PageForm form);
 
-    PageVo<GroupMember> pageGroupMemberByUid(PageForm form, Long uid);
+    PageVo<GroupMember> pageGroupMemberByGid(PageForm form, Long gid);
 
 
     List<GroupMember> listMember(Long gid, int limit);
