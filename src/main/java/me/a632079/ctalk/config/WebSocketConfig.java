@@ -89,9 +89,4 @@ public class WebSocketConfig {
     public SpringAnnotationScanner springAnnotationScanner(SocketIOServer server) {
         return new SpringAnnotationScanner(server);
     }
-
-    @Bean
-    public ConcurrentHashMap<Long, UserInfo> userInfoMap() {
-        return new ConcurrentHashMap<>(1024);
-    }
 }

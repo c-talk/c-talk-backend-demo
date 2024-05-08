@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @className: PageVo
@@ -40,5 +42,16 @@ public class PageVo<T> {
         return pageVo;
     }
 
+    public static <R> PageVo<R> of(List<R> data, PageVo pageVo) {
+        PageForm form = new PageForm();
+        form.setPageNum(pageVo.getPage());
+        form.setPageSize(pageVo.getPageSize());
+        return PageVo.of(data, form, pageVo.getTotal());
+    }
 
+    public <R> PageVo<R> trans(Function<T, R> mapFunc) {
+        return PageVo.of(items.stream()
+                              .map(mapFunc)
+                              .collect(Collectors.toList()), this);
+    }
 }

@@ -141,7 +141,6 @@ public class FriendController {
         }
 
         // TODO 需要判断好友是否存在
-
         Friend friend = Friend.builder()
                               .friendId(id)
                               .uid(UserInfoUtil.getId())

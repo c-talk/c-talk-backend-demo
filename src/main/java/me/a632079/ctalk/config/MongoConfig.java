@@ -2,11 +2,14 @@ package me.a632079.ctalk.config;
 
 import cn.hutool.core.lang.Snowflake;
 import me.a632079.ctalk.po.BasePo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.mapping.callback.EntityCallbacks;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertCallback;
 
@@ -26,6 +29,15 @@ public class MongoConfig {
 
     @Resource
     private Snowflake snowflake;
+
+    @Value("${spring.data.mongodb.uri}")
+    private String uri;
+
+    @Bean
+    @Primary
+    public MongoDatabaseFactory mongoDatabaseFactory() {
+        return new SimpleMongoClientDatabaseFactory(uri);
+    }
 
     @Bean
     public MongoTemplate mongoTemplate(MongoDatabaseFactory databaseFactory, MappingMongoConverter converter) {

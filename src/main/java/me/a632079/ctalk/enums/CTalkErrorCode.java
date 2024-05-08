@@ -25,6 +25,8 @@ public enum CTalkErrorCode implements IErrorCode {
 
     FILE_EMPTY("302", "文件为空"),
 
+    GROUP_NOT_JOINED("501", "未加入群组"),
+
     TODO("998", "空置错误"),
 
     TEST_ERROR("999", "测试错误");

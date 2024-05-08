@@ -2,6 +2,7 @@ package me.a632079.ctalk.service.impl;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -91,6 +92,12 @@ public class UserServiceImpl implements UserService {
         List<User> users = template.find(query.with(pageRequest), User.class);
 
         return PageVo.of(mapperFacade.mapAsList(users, UserVo.class), form, count);
+    }
+
+    @Override
+    public List<User> listUserByIds(List<Long> ids) {
+        return Lists.newArrayList(userRepository.findAllById(ids)
+                                                .iterator());
     }
 
     @Override

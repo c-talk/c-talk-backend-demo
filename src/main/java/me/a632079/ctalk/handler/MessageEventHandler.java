@@ -91,11 +91,15 @@ public class MessageEventHandler {
 
         // 绑定群组消息队列
         List<GroupMember> members = groupMemberRepository.findAllByUid(uid);
+        log.info("用户群组: {}", members);
         for (GroupMember member : members) {
             exchangeAndQueueConfig.createGroupMessageBind(member.getGid(), member.getUid());
         }
 
-        groupChannel.basicConsume("user.group." + uid, new GroupMessageConsumer(groupChannel, info));
+        if (!members.isEmpty()) {
+            groupChannel.basicConsume("user.group." + uid, new GroupMessageConsumer(groupChannel, info));
+        }
+
         info.setGroupChannel(groupChannel);
 
         userInfoMap.put(uid, info);

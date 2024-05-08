@@ -6,6 +6,8 @@ import me.a632079.ctalk.vo.RegisterForm;
 import me.a632079.ctalk.vo.UserPageForm;
 import me.a632079.ctalk.vo.UserVo;
 
+import java.util.List;
+
 /**
  * @className: UserService
  * @description: UserService - TODO
@@ -22,6 +24,8 @@ public interface UserService {
     User getUserByEmail(String email);
 
     PageVo<UserVo> pageUser(UserPageForm form);
+
+    List<User> listUserByIds(List<Long> ids);
 
     boolean exist(Long id);
 }

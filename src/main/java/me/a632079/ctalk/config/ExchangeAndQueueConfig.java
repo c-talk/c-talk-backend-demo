@@ -1,5 +1,6 @@
 package me.a632079.ctalk.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -13,7 +14,7 @@ import javax.annotation.Resource;
  * @version: v1.0.0
  * @author: haoduor
  */
-
+@Slf4j
 @Component
 public class ExchangeAndQueueConfig {
 
@@ -29,19 +30,22 @@ public class ExchangeAndQueueConfig {
      */
     public void createDirectBindQueue(String exchange, String routingKey, String queueName) {
         DirectExchange directExchange = new DirectExchange(exchange, false, false);
-        Queue queue = new Queue(queueName, false, true, true);
+        Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
+
+
         //创建
         rabbitAdmin.declareQueue(queue);
         rabbitAdmin.declareExchange(directExchange);
         rabbitAdmin.declareBinding(binding);
+        log.info("创建私聊交换机{} 队列{}", exchange, queueName);
     }
 
     public void removeDirectBindQueue(String exchange, String routingKey, String queueName) {
         DirectExchange directExchange = new DirectExchange(exchange, false, false);
-        Queue queue = new Queue(queueName, false, true, true);
+        Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
@@ -52,7 +56,7 @@ public class ExchangeAndQueueConfig {
 
     public void createFanoutBindQueue(String exchange, String queueName) {
         FanoutExchange directExchange = new FanoutExchange(exchange, false, false);
-        Queue queue = new Queue(queueName, false, true, true);
+        Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange);
 
@@ -60,11 +64,12 @@ public class ExchangeAndQueueConfig {
         rabbitAdmin.declareQueue(queue);
         rabbitAdmin.declareExchange(directExchange);
         rabbitAdmin.declareBinding(binding);
+        log.info("创建群聊交换机{} 队列{}", exchange, queueName);
     }
 
     public void removeFanoutBindQueue(String exchange, String queueName) {
         FanoutExchange directExchange = new FanoutExchange(exchange, false, false);
-        Queue queue = new Queue(queueName, false, true, true);
+        Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange);
 
