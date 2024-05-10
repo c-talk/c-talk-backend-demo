@@ -29,12 +29,11 @@ public class ExchangeAndQueueConfig {
      * @param queueName  队列
      */
     public void createDirectBindQueue(String exchange, String routingKey, String queueName) {
-        DirectExchange directExchange = new DirectExchange(exchange, false, false);
+        DirectExchange directExchange = new DirectExchange(exchange, true, false);
         Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
-
 
         //创建
         rabbitAdmin.declareQueue(queue);
@@ -44,14 +43,14 @@ public class ExchangeAndQueueConfig {
     }
 
     public void removeDirectBindQueue(String exchange, String routingKey, String queueName) {
-        DirectExchange directExchange = new DirectExchange(exchange, false, false);
+        DirectExchange directExchange = new DirectExchange(exchange, true, false);
         Queue queue = new Queue(queueName, false, false, true);
         Binding binding = BindingBuilder.bind(queue)
                                         .to(directExchange)
                                         .with(routingKey);
         //删除
         rabbitAdmin.removeBinding(binding);
-        rabbitAdmin.deleteExchange(exchange);
+        rabbitAdmin.deleteQueue(queueName);
     }
 
     public void createFanoutBindQueue(String exchange, String queueName) {
@@ -74,8 +73,8 @@ public class ExchangeAndQueueConfig {
                                         .to(directExchange);
 
         //删除
-        rabbitAdmin.deleteExchange(exchange);
         rabbitAdmin.removeBinding(binding);
+        rabbitAdmin.deleteQueue(queueName);
     }
 
     public void createPrivateMessageBind(Long uid) {

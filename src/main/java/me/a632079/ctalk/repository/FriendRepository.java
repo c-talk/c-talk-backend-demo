@@ -17,4 +17,6 @@ public interface FriendRepository extends MongoRepository<Friend, Long> {
     List<Friend> findAllByUid(Long uid);
 
     boolean existsByUidAndFriendId(Long uid, Long friendId);
+
+    void removeByUidAndFriendId(Long uid, Long friendId);
 }

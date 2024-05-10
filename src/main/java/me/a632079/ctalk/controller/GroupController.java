@@ -202,7 +202,10 @@ public class GroupController {
     @PostMapping("/remove")
     public void removeGroup(@RequestBody IdForm form) {
         groupService.deleteGroup(form.getId());
+
+        groupMemberService.deleteGroup(form.getId());
     }
+
 
     @Data
     class Count {

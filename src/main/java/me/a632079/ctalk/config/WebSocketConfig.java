@@ -1,7 +1,5 @@
 package me.a632079.ctalk.config;
 
-import cn.dev33.satoken.SaManager;
-import cn.dev33.satoken.stp.StpUtil;
 import com.corundumstudio.socketio.AuthorizationResult;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
@@ -50,7 +48,7 @@ public class WebSocketConfig {
         config.setHostname(host);
         config.setPort(port);
 
-        config.setOrigin("*");
+        // config.setOrigin("*");
         config.setWorkerThreads(20);
 
         //这个listener可以用来进行身份验证

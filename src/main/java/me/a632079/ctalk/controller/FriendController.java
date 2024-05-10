@@ -19,10 +19,7 @@ import me.a632079.ctalk.service.MessageService;
 import me.a632079.ctalk.service.UserService;
 import me.a632079.ctalk.util.MessageUtil;
 import me.a632079.ctalk.util.UserInfoUtil;
-import me.a632079.ctalk.vo.FriendSearchForm;
-import me.a632079.ctalk.vo.FriendVo;
-import me.a632079.ctalk.vo.PageForm;
-import me.a632079.ctalk.vo.PageVo;
+import me.a632079.ctalk.vo.*;
 import org.checkerframework.checker.optional.qual.EnsuresPresentIf;
 import org.simpleframework.xml.Path;
 import org.springframework.data.domain.Example;
@@ -166,5 +163,16 @@ public class FriendController {
     @PostMapping("/remove")
     public void remove(@RequestParam Long relationId) {
         repository.deleteById(relationId);
+    }
+
+
+    @PostMapping("/cut")
+    public void cutFriendRelation(@RequestBody CutFriendForm form) {
+        Long uid = form.getUid();
+        if (!uid.equals(StpUtil.getLoginIdAsLong())) {
+            throw CTalkExceptionFactory.bizException(CTalkErrorCode.NOT_OWNER_RESOURCE);
+        }
+
+        repository.removeByUidAndFriendId(uid, form.getFriendId());
     }
 }

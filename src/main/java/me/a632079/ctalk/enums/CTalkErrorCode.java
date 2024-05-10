@@ -27,6 +27,8 @@ public enum CTalkErrorCode implements IErrorCode {
 
     GROUP_NOT_JOINED("501", "未加入群组"),
 
+    NOT_OWNER_RESOURCE("901", "无权限操作"),
+
     TODO("998", "空置错误"),
 
     TEST_ERROR("999", "测试错误");

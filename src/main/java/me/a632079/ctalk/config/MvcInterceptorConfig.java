@@ -72,6 +72,7 @@ public class MvcInterceptorConfig extends WebMvcConfigurationSupport {
 
         jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
         converters.add(jackson2HttpMessageConverter);
+
         super.configureMessageConverters(converters);
     }
 }

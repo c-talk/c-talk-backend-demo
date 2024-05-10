@@ -24,6 +24,8 @@ public interface GroupMemberService {
 
     void addGroupMember(Long gid, Long uid);
 
+    void deleteGroup(Long gid);
+
     PageVo<GroupMember> pageGroupMember(PageForm form);
 
     PageVo<GroupMember> pageGroupMemberByGid(PageForm form, Long gid);

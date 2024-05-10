@@ -60,6 +60,13 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    public void deleteGroup(Long gid) {
+        if (!repository.removeByGid(gid)) {
+            // TODO 异常以及回滚策略
+        }
+    }
+
+    @Override
     public PageVo<GroupMember> pageGroupMember(PageForm form) {
         return this.pageGroupMemberByGid(form, null);
     }

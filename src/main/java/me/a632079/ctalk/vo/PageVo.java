@@ -42,12 +42,12 @@ public class PageVo<T> {
         return pageVo;
     }
 
-    public static <R> PageVo<R> of(List<R> data, PageVo pageVo) {
+    public static <R> PageVo<R> of(List<R> data, PageVo<?> pageVo) {
         PageVo<R> res = new PageVo<>();
-        pageVo.setItems(data);
-        pageVo.setPage(pageVo.getPage());
-        pageVo.setPageSize(pageVo.getPageSize());
-        pageVo.setTotal(pageVo.getTotal());
+        res.setItems(data);
+        res.setPage(pageVo.getPage());
+        res.setPageSize(pageVo.getPageSize());
+        res.setTotal(pageVo.getTotal());
 
         return res;
     }
